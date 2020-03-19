@@ -1,4 +1,5 @@
 import mysql.connector
+import json
 
 mydb = mysql.connector.connect(
     host="localhost", user="root", passwd="root", database="daeon-world"
@@ -7,7 +8,7 @@ mydb = mysql.connector.connect(
 
 def select(table, fetch="all", element="*", join=None):
     """
-    Récupérer les données d'une table.
+    Récupérer les données d'une table
     """
     cursor = mydb.cursor()
     sql_requet = (
@@ -17,11 +18,13 @@ def select(table, fetch="all", element="*", join=None):
     )
     cursor.execute(sql_requet)
     row_headers = [x[0] for x in cursor.description]
-    result = (
-        cursor.fetchone()
-        if fetch == "one"
-        else cursor.fetchmany()
-        if fetch == "many"
-        else cursor.fetchall()
-    )
-    return dict(zip(row_headers, result))
+
+    if fetch == "one":
+        return dict(zip(row_headers, cursor.fetchone()))
+    elif fetch == "many":
+        result = cursor.fetchmany()
+    else:
+        results = []
+        for data in cursor.fetchall():
+            results.append(dict(zip(row_headers, data)))
+        return results
