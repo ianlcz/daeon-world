@@ -1,8 +1,20 @@
 from tools.mysql import *
-from daeon_class import *
+
+# On importe les classes
+from classes.joueur import Joueur
+from classes.personnage import Personnage
+from classes.espece import Espece
+from classes.categorie import Categorie
+
 
 # On récupère toutes les données d'un personnage
-dataPersonnage = select("personnage", "one")
+dataPersonnage = select(
+    "personnage p",
+    "one",
+    "*",
+    """JOIN joueur j ON p.idPlayer=j.id WHERE p.idPlayer='%s'"""
+    % (Joueur.connexion()["id"]),
+)
 
 # On crée l'objet 'player' en fonction des données que l'on a récupéré
 player = Personnage(
