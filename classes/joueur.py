@@ -65,7 +65,7 @@ class Joueur:
         """
         if select("joueur", "one") is None:
             # Création d'un compte joueur
-            inscription()
+            Joueur.inscription()
         else:
             # Connexion au compte joueur
             login = str(input("Identifiant: ")).upper()
