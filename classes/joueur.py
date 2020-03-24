@@ -27,7 +27,8 @@ class Joueur:
                 "joueur",
                 "one",
                 "*",
-                """WHERE lastname='%s' AND firstname='%s'""" % (nom, prenom),
+                """WHERE UPPER(lastname)='%s' AND UPPER(firstname)='%s'"""
+                % (nom.upper(), prenom.upper()),
             )
             is not None
             or len(nom) < 2
@@ -87,7 +88,8 @@ class Joueur:
             "joueur",
             "one",
             "*",
-            """WHERE login='%s' OR password='%s'""" % (login, mot_de_passe),
+            """WHERE UPPER(login)='%s' OR password='%s'"""
+            % (login.upper(), mot_de_passe),
         )
         if player is None:
             # Le compte n'existe pas
@@ -98,7 +100,8 @@ class Joueur:
                 "joueur",
                 "one",
                 "id",
-                """WHERE login='%s' AND password='%s'""" % (login, mot_de_passe),
+                """WHERE UPPER(login)='%s' AND password='%s'"""
+                % (login.upper(), mot_de_passe),
             )
         ) is None:
             # Le login ou mot de passe est erroné
@@ -117,7 +120,8 @@ class Joueur:
 
         if avatar is None:
             # Le joueur n'a pas de personnage
-            Personnage.creation()
+            os.system("clear")
+            Personnage.creation(player["id"])
             exit(0)
         else:
             os.system("clear")

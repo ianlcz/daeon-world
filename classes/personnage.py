@@ -1,3 +1,7 @@
+from tools.mysql import *
+from helpers.question import say_question
+
+
 class Personnage:
     """
     Avatar du joueur
@@ -23,8 +27,29 @@ class Personnage:
         )
 
     @staticmethod
-    def creation():
+    def creation(id_joueur):
         """
-        Créer l'avatar du joueur
+        Créer le personnage du joueur
         """
-        print("Fonction Création d'un personnage!!")
+        nom = str(input("Comment voulez-vous que l'on vous appelle ?\n> "))
+
+        while (
+            not nom
+            or len(nom) < 3
+            or nom.lower() == "user"
+            or select("personnage", "one", "id", """WHERE UPPER(name)='%s'""" % (nom.upper()))
+        ):
+            nom = str(input("> "))
+
+        mydb.cursor().execute(
+            """INSERT INTO personnage (idPlayer, idSpecies, idCategory, name) VALUES (%s, %s, %s, %s)""",
+            (
+                id_joueur,
+                say_question("Choisissez votre espèce: ", select("espece", "all")),
+                say_question("Choisissez votre classe: ", select("classe", "all")),
+                nom,
+            ),
+        )
+        mydb.commit()
+
+        print("\nVous venez de créer votre personnage.")
