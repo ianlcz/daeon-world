@@ -21,3 +21,10 @@ class Personnage:
             if self.niveau == 0 and self.point_xp == 0
             else f"Nom:\t\t{self.nom} (niv.{self.niveau} | XP:{self.point_xp})\nRace:\t\t{self.race}\nSexe:\t\t{self.sexe}\nClasse:\t\t{self.classe}\n"
         )
+
+    @staticmethod
+    def creation():
+        """
+        Créer l'avatar du joueur
+        """
+        print("Fonction Création d'un personnage!!")
