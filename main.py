@@ -19,6 +19,7 @@ dataPersonnage = select(
 
 # On crée l'objet 'player' en fonction des données que l'on a récupéré
 player = Personnage(
+    dataPersonnage["id"],
     dataPersonnage["name"],
     dataJoueur["gender"],
     Espece(
