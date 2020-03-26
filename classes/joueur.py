@@ -66,7 +66,7 @@ class Joueur:
                 nom.upper(),
                 prenom,
                 sexe,
-                (list(prenom)[0] + nom.replace(" ", "")).upper(),
+                (list(prenom)[0] + nom.replace(" ", "")).lower(),
                 password,
             ),
         )
@@ -135,20 +135,20 @@ class Joueur:
         if avatar is None:
             # Le joueur n'a pas de personnage
             os.system("clear")
-            Personnage.creation(player["id"])
+            print(Personnage.creation(player["id"]))
             exit(0)
         else:
             # Le joueur a réussi à se connecter et à un personnage
+            sexe = "M." if player["gender"] == "M" else "Mme."
             print(
-                f"\n{player['lastname']} {player['firstname']}"
-                + ", vous êtes connecté à Daeon World !"
+                f"\n{sexe} {player['firstname']} {player['lastname']}, vous êtes connecté à Daeon World !"
             )
             time.sleep(4)  # Temporisation de 4s
             os.system("clear")
             print(
-                f"""{player['firstname']} {player['lastname']} [{select('joueur j', 'one', 'r.name', "JOIN role r ON j.idRole=r.id WHERE j.id='%s'" % (player['id']))['name']}]\n"""
+                f"""{player['firstname']} {player['lastname']} [{select('joueur j', 'one', 'r.nameRole', "JOIN role r ON j.idRole=r.id WHERE j.id='%s'" % (player['id']))['nameRole']}]\n"""
                 if not player["last_connection"]
-                else f"""{player['firstname']} {player['lastname']} [{select('joueur j', 'one', 'r.name', "JOIN role r ON j.idRole=r.id WHERE j.id='%s'" % (player['id']))['name']}] - {player['last_connection'].strftime('%d/%m/%Y %H:%M:%S')}\n"""
+                else f"""{player['firstname']} {player['lastname']} [{select('joueur j', 'one', 'r.nameRole', "JOIN role r ON j.idRole=r.id WHERE j.id='%s'" % (player['id']))['nameRole']}] - {player['last_connection'].strftime('%d/%m/%Y %H:%M:%S')}\n"""
             )
 
             update(

@@ -7,3 +7,4 @@ def say_question(title, options):
 
     option, index = pick(options, title, indicator=">", options_map_func=get_label)
     return option["id"]
+

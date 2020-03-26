@@ -1,5 +1,5 @@
 from tools.mysql import *
-from helpers.question import say_question
+from helpers import say_question
 
 
 class Personnage:
@@ -7,25 +7,81 @@ class Personnage:
     Avatar du joueur
     """
 
-    def __init__(self, ref, nom, sexe, race, classe, niveau=0, point_xp=0):
+    def __init__(
+        self, ref, nom, sexe, race, classe, inventaire=[], niveau=1, point_xp=0
+    ):
         self.ref = ref
         self.nom = nom
         self.sexe = sexe
         self.race = race
         self.classe = classe
+        self.inventaire = inventaire
         self.niveau = niveau
         self.point_xp = point_xp
+
+    def get_id(self):
+        """
+        Retourne l'id du Personnage
+        """
+        return self.ref
+
+    def get_nom(self):
+        """
+        Retourne le nom du Personnage
+        """
+        return self.nom
+
+    def get_sexe(self):
+        """
+        Retourne le sexe du Personnage
+        """
+        return self.sexe
+
+    def get_race(self):
+        """
+        Retourne la race du Personnage
+        """
+        return self.race
+
+    def get_classe(self):
+        """
+        Retourne la classe du Personnage
+        """
+        return self.classe
+
+    def get_inventaire(self):
+        """
+        Retourne l'inventaire du Personnage
+        """
+        return self.inventaire
+
+    def get_niveau(self):
+        """
+        Retourne le niveau du Personnage
+        """
+        return self.niveau
+
+    def get_point_xp(self):
+        """
+        Retourne le nombre d'XP du Personnage
+        """
+        return self.point_xp
 
     def __str__(self):
         """
         Carte d'identité de l'avatar
         """
         sexe = "Masculin" if self.sexe == "M" else "Féminin"
-        return (
-            f"Nom:\t\t{self.nom} (niv.{self.niveau})\nRace:\t\t{self.race}\nSexe:\t\t{sexe}\nClasse:\t\t{self.classe}"
-            if self.niveau == 0 and self.point_xp == 0
-            else f"Nom:\t\t{self.nom} (niv.{self.niveau} | XP:{self.point_xp})\nRace:\t\t{self.race}\nSexe:\t\t{sexe}\nClasse:\t\t{self.classe}"
-        )
+
+        if not self.inventaire:
+            inventaire = "Votre inventaire est vide !"
+        else:
+            inventaire = []
+            for el in self.inventaire:
+                inventaire.append(el["nameObject"])
+            inventaire = "Inventaire:\t" + "\n\t\t".join(inventaire)
+
+        return f"Nom:\t\t{self.nom} (niv.{self.niveau} | XP:{self.point_xp})\nRace:\t\t{self.race}\nSexe:\t\t{sexe}\nClasse:\t\t{self.classe}\n\n{inventaire}"
 
     def gagner_point_xp(self, nb_xp):
         """
@@ -33,7 +89,7 @@ class Personnage:
         """
         self.point_xp += nb_xp
         update("personnage", "point_xp='%s'" % (self.point_xp), "id='%s'" % (self.ref))
-        print(f"\nVous venez de gagner {nb_xp} XP\n\n{self}")
+        return f"\nVous venez de gagner {nb_xp} XP\n\n{self}"
 
     @staticmethod
     def creation(id_joueur):
@@ -65,6 +121,4 @@ class Personnage:
         )
         mydb.commit()
 
-        print(
-            f"""> Votre espèce: {select("espece", "one", "*", "WHERE id='%s'" % (espece))['name']}\n> Votre classe: {select("classe", "one", "*", "WHERE id='%s'" % (classe))['name']}\n\nVous venez de créer votre personnage."""
-        )
+        return f"""> Votre espèce: {select("espece", "one", "*", "WHERE id='%s'" % (espece))['name']}\n> Votre classe: {select("classe", "one", "*", "WHERE id='%s'" % (classe))['name']}\n\nVous venez de créer votre personnage."""
