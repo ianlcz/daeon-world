@@ -8,7 +8,16 @@ class Personnage:
     """
 
     def __init__(
-        self, ref, nom, sexe, race, classe, inventaire=[], niveau=1, point_xp=0
+        self,
+        ref,
+        nom,
+        sexe,
+        race,
+        classe,
+        inventaire=[],
+        point_vie=1.0,
+        niveau=1,
+        point_xp=0,
     ):
         self.ref = ref
         self.nom = nom
@@ -16,6 +25,7 @@ class Personnage:
         self.race = race
         self.classe = classe
         self.inventaire = inventaire
+        self.point_vie = point_vie
         self.niveau = niveau
         self.point_xp = point_xp
 
@@ -55,6 +65,12 @@ class Personnage:
         """
         return self.inventaire
 
+    def get_point_vie(self):
+        """
+        Retourne le pourcentage de vie du Personnage
+        """
+        return self.point_vie
+
     def get_niveau(self):
         """
         Retourne le niveau du Personnage
@@ -73,15 +89,25 @@ class Personnage:
         """
         sexe = "Masculin" if self.sexe == "M" else "Féminin"
 
+        self.point_vie = (
+            int(self.point_vie)
+            if self.point_vie - int(self.point_vie) == 0.0
+            else self.point_vie
+        )
+
         if not self.inventaire:
             inventaire = "Votre inventaire est vide !"
         else:
             inventaire = []
-            for el in self.inventaire:
-                inventaire.append(el["nameObject"])
+            for objet in self.inventaire:
+                inventaire.append(
+                    f"{objet['nameObject']} (x{objet['Quantité']})"
+                    if objet["Quantité"] > 1
+                    else objet["nameObject"]
+                )
             inventaire = "Inventaire:\t" + "\n\t\t".join(inventaire)
 
-        return f"Nom:\t\t{self.nom} (niv.{self.niveau} | XP:{self.point_xp})\nRace:\t\t{self.race}\nSexe:\t\t{sexe}\nClasse:\t\t{self.classe}\n\n{inventaire}"
+        return f"niv.{self.niveau} | XP:{self.point_xp} | Vie:{round(self.point_vie * 100, 1)}\n\nNom:\t\t{self.nom}\nRace:\t\t{self.race}\nSexe:\t\t{sexe}\nClasse:\t\t{self.classe}\n\n{inventaire}"
 
     def gagner_point_xp(self, nb_xp):
         """
@@ -107,18 +133,25 @@ class Personnage:
             or len(nom) < 3
             or nom.lower() == "user"
             or select(
-                "personnage", "one", "id", "WHERE UPPER(name)='%s'" % (nom.upper())
+                "personnage",
+                "one",
+                "id",
+                "WHERE UPPER(nameCharacter)='%s'" % (nom.upper()),
             )
         ):
             nom = str(input("> "))
 
-        espece = say_question("Choisissez votre espèce: ", select("espece", "all"))
-        classe = say_question("Choisissez votre classe: ", select("classe", "all"))
+        espece = say_question(
+            "Choisissez votre espèce: ", select("espece", "all"), "Species"
+        )
+        classe = say_question(
+            "Choisissez votre classe: ", select("classe", "all"), "Category"
+        )
 
         mydb.cursor().execute(
-            "INSERT INTO personnage (idPlayer, idSpecies, idCategory, name) VALUES (%s, %s, %s, %s)",
+            "INSERT INTO personnage (idPlayer, idSpecies, idCategory, nameCharacter) VALUES (%s, %s, %s, %s)",
             (id_joueur, espece, classe, nom,),
         )
         mydb.commit()
 
-        return f"""> Votre espèce: {select("espece", "one", "*", "WHERE id='%s'" % (espece))['name']}\n> Votre classe: {select("classe", "one", "*", "WHERE id='%s'" % (classe))['name']}\n\nVous venez de créer votre personnage."""
+        return f"""> Votre espèce: {select("espece", "one", "*", "WHERE id='%s'" % (espece))['nameSpecies']}\n> Votre classe: {select("classe", "one", "*", "WHERE id='%s'" % (classe))['nameCategory']}\n\nVous venez de créer votre personnage."""

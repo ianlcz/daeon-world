@@ -139,10 +139,7 @@ class Joueur:
             exit(0)
         else:
             # Le joueur a réussi à se connecter et à un personnage
-            sexe = "M." if player["gender"] == "M" else "Mme."
-            print(
-                f"\n{sexe} {player['firstname']} {player['lastname']}, vous êtes connecté à Daeon World !"
-            )
+            print(f"\nNous vous connectons à Daeon World...")
             time.sleep(4)  # Temporisation de 4s
             os.system("clear")
             print(

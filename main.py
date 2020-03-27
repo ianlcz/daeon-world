@@ -22,10 +22,17 @@ dataPersonnage = select(
 dataInventaire = select(
     "objet o",
     "all",
+    "o.nameObject, COUNT(o.nameObject) AS Quantité",
+    "JOIN inventaire i ON o.id=i.idObject JOIN personnage p ON p.id=i.idCharacter WHERE p.id=%s GROUP BY o.nameObject"
+    % (dataPersonnage["id"]),
+)
+""" select(
+    "objet o",
+    "all",
     "*",
     "JOIN inventaire i ON o.id=i.idObject JOIN personnage p ON p.id=i.idCharacter WHERE p.id=%s"
     % (dataPersonnage["id"]),
-)
+) """
 
 # On crée l'objet 'player' en fonction des données que l'on a récupéré
 player = Personnage(
@@ -46,8 +53,9 @@ player = Personnage(
         )["nameCategory"]
     ).nom,
     dataInventaire,
+    dataPersonnage["life_points"],
     dataPersonnage["level"],
-    dataPersonnage["point_xp"],
+    dataPersonnage["exp_points"],
 )
 
 # On affiche les informations de l'objet 'player'
