@@ -52,7 +52,7 @@ class Joueur:
         ).hexdigest()
 
         while not password or not verify_password or password != verify_password:
-            print("\n!! Aucune correspondance\n")
+            print("\n!! Le mot de passe ne concorde pas\n")
             password = hashlib.sha256(
                 getpass("Veuillez retaper votre mot de passe: ").encode()
             ).hexdigest()

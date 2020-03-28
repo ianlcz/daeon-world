@@ -10,6 +10,8 @@ Le jeu parvient aussi à récupérer des informations d'une base de données **M
 
 ## Sommaire
 
+- [**Schématisation de la base de données**](./assets/img/merise)
+  - [Modèle logique des données (MLD)](./assets/img/merise/mld.png)
 - [Comment créer un compte joueur ?](#comment-créer-un-compte-joueur)
 - [Comment se connecter à un compte joueur ?](#comment-se-connecter-à-un-compte-joueur)
 - [Comment créer son personnage ?](#comment-créer-son-personnage)
@@ -71,15 +73,18 @@ Maintenant que vous avez votre compte joueur et que vous pouvez vous connecter, 
 
 Pour cela, reconnectez-vous à votre compte joueur.
 Vous devriez avoir alors avoir le visuel suivant:
+
 ```
 Création de votre personnage
 
 Comment voulez-vous que l'on vous appelle ?
-> 
+>
 ```
+
 Veuillez alors entrer votre `pseudo` et appuyer sur `ENTER`.
 
 Le visuel suivant vous demandera de choisir l'`espèce` de votre personnage:
+
 ```
  Choisissez votre espèce:
 
@@ -90,6 +95,7 @@ Le visuel suivant vous demandera de choisir l'`espèce` de votre personnage:
 ```
 
 Et enfin, un dernier visuel vous demandera de choisir la `classe` de votre personnage:
+
 ```
  Choisissez votre classe:
 
@@ -99,6 +105,7 @@ Et enfin, un dernier visuel vous demandera de choisir la `classe` de votre perso
 ```
 
 Vous devriez alors avoir un visuel proche de celui-ci:
+
 ```
 Création de votre personnage
 
@@ -109,6 +116,7 @@ Comment voulez-vous que l'on vous appelle ?
 
 Vous venez de créer votre personnage.
 ```
+
 Comme vous l'indique le message de fin **vous venez de créer votre compte personnage**.
 
 ## Licence
