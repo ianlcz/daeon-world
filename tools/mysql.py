@@ -34,3 +34,11 @@ def update(table, columns, where):
     """
     cursor.execute(f"UPDATE {table} SET {columns} WHERE {where}")
     mydb.commit()
+
+
+def delete(table, conditions):
+    """
+    Supprimer des données d'une table
+    """
+    cursor.execute(f"DELETE FROM {table} WHERE {conditions}")
+    mydb.commit()
