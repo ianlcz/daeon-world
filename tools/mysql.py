@@ -33,5 +33,4 @@ def update(table, columns, where):
     Modifier une donnée d'une table
     """
     cursor.execute(f"UPDATE {table} SET {columns} WHERE {where}")
-
     mydb.commit()

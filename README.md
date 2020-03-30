@@ -46,8 +46,10 @@ Quel est votre prénom ?
 > John
 Quel est votre sexe ? [M/F]
 > M
-Tapez votre mot de passe:
-Confirmez votre mot de passe:
+
+> Entrez votre adresse mail: john.doe@exemple.com
+> Tapez votre mot de passe:
+> Confirmez votre mot de passe:
 
 Vous venez de créer votre compte joueur.
 ```
@@ -61,9 +63,12 @@ Une fois votre compte créé, relancez le jeu en tapant cette fois-ci pour:
 - l'identifiant votre `login`
 
   Le `login` est constitué de la **première lettre de votre prénom** suivi de votre **nom de famille**.
-  S'il contient des espaces ceux-ci devront être effacés pour votre `login`.
 
-  > Dans notre exemple, le `login` de John Doe est `jdoe`.
+  Si votre nom de famille contient des espaces, ceux-ci seront supprimés avec la lettre qui les précède.
+
+  > Dans notre exemple, l'**identifiant** de _John Doe_ est `jdoe`.
+  >
+  > Mais dans le cas de _Guy de Maupassant_, celui-ci sera `gdmaupassant`.
 
 - le mot de passe votre `mot de passe`
 
@@ -82,6 +87,13 @@ Comment voulez-vous que l'on vous appelle ?
 ```
 
 Veuillez alors entrer votre `pseudo` et appuyer sur `ENTER`.
+
+> Si un chevron `>` apparaît, c'est qu'il y a une erreur dans le nom de votre personnage. Les erreurs possibles sont les suivantes :
+>
+> - Aucun nom a été saisi
+> - Le nom est déjà pris par un autre joueur
+> - Le nom est `user`
+> - Le nom comporte un espace ou un trait d'union
 
 Le visuel suivant vous demandera de choisir l'`espèce` de votre personnage:
 

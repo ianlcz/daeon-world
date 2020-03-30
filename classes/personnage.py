@@ -1,5 +1,5 @@
 from tools.mysql import *
-from helpers import say_question
+from helpers import *
 
 
 class Personnage:
@@ -15,9 +15,12 @@ class Personnage:
         race,
         classe,
         inventaire=[],
-        point_vie=1.0,
         niveau=1,
         point_xp=0,
+        point_vie=1.0,
+        point_attaque=0,
+        point_defense=0,
+        argent=None,
     ):
         self.ref = ref
         self.nom = nom
@@ -25,63 +28,12 @@ class Personnage:
         self.race = race
         self.classe = classe
         self.inventaire = inventaire
-        self.point_vie = point_vie
         self.niveau = niveau
         self.point_xp = point_xp
-
-    def get_id(self):
-        """
-        Retourne l'id du Personnage
-        """
-        return self.ref
-
-    def get_nom(self):
-        """
-        Retourne le nom du Personnage
-        """
-        return self.nom
-
-    def get_sexe(self):
-        """
-        Retourne le sexe du Personnage
-        """
-        return self.sexe
-
-    def get_race(self):
-        """
-        Retourne la race du Personnage
-        """
-        return self.race
-
-    def get_classe(self):
-        """
-        Retourne la classe du Personnage
-        """
-        return self.classe
-
-    def get_inventaire(self):
-        """
-        Retourne l'inventaire du Personnage
-        """
-        return self.inventaire
-
-    def get_point_vie(self):
-        """
-        Retourne le pourcentage de vie du Personnage
-        """
-        return self.point_vie
-
-    def get_niveau(self):
-        """
-        Retourne le niveau du Personnage
-        """
-        return self.niveau
-
-    def get_point_xp(self):
-        """
-        Retourne le nombre d'XP du Personnage
-        """
-        return self.point_xp
+        self.point_vie = point_vie
+        self.point_attaque = point_attaque
+        self.point_defense = point_defense
+        self.argent = argent
 
     def __str__(self):
         """
@@ -89,14 +41,20 @@ class Personnage:
         """
         sexe = "Masculin" if self.sexe == "M" else "Féminin"
 
-        self.point_vie = (
-            int(self.point_vie)
-            if self.point_vie - int(self.point_vie) == 0.0
-            else self.point_vie
+        point_vie = (
+            int(self.point_vie * 100)
+            if self.point_vie * 100 - int(self.point_vie * 100) == 0.0
+            else self.point_vie * 100
         )
 
-        if not self.inventaire:
+        argent = "Pas de pièces" if self.argent is None else f"Pièces: {self.argent}"
+
+        # Si l'inventaire ne contient rien et que le personnage n'a pas d'argent
+        if not self.inventaire and self.argent is None:
             inventaire = "Votre inventaire est vide !"
+        # Sinon si l'inventaire ne contient rien et que le personnage possède de l'argent
+        elif not self.inventaire and self.argent is not None:
+            inventaire = "Inventaire:\t" + argent
         else:
             inventaire = []
             for objet in self.inventaire:
@@ -105,17 +63,62 @@ class Personnage:
                     if objet["Quantité"] > 1
                     else objet["nameObject"]
                 )
+            inventaire.append("\n\t\t" + argent)
             inventaire = "Inventaire:\t" + "\n\t\t".join(inventaire)
 
-        return f"niv.{self.niveau} | XP:{self.point_xp} | Vie:{round(self.point_vie * 100, 1)}\n\nNom:\t\t{self.nom}\nRace:\t\t{self.race}\nSexe:\t\t{sexe}\nClasse:\t\t{self.classe}\n\n{inventaire}"
+        return f"\nniv.{self.niveau} | XP:{self.point_xp} | PV:{round(point_vie, 1)}\n\nNom:\t\t{self.nom}\nRace:\t\t{self.race}\nSexe:\t\t{sexe}\nClasse:\t\t{self.classe}\n\nAttaque:\t{self.point_attaque}\nDéfense:\t{self.point_defense}\n\n{inventaire}\n"
 
     def gagner_point_xp(self, nb_xp):
         """
-        Faire gagner nb_xp point d'XP à un personnage
+        Gagner nb_xp points d'XP à un personnage
         """
         self.point_xp += nb_xp
         update("personnage", "point_xp='%s'" % (self.point_xp), "id='%s'" % (self.ref))
-        return f"\nVous venez de gagner {nb_xp} XP\n\n{self}"
+        return f"\nVous venez de gagner {nb_xp} XP !\n"
+
+    def ajouter_objet(self, l_objet):
+        """
+        Mettre un objet dans son inventaire
+        """
+        for objet in l_objet:
+            # Récupération des données de l'objet
+            dataObjet = select(
+                "objet",
+                "one",
+                "*",
+                "WHERE LOWER(nameObject)='%s'" % (objet["nom"].lower()),
+            )
+            if not dataObjet:
+                print(f"!! Nous n'avons pas pu trouvé l'objet: {objet['nom']}")
+                exit(404)
+            # Ajout de l'objet dans l'inventaire
+            for item in range(objet["quantité"]):
+                mydb.cursor().execute(
+                    "INSERT INTO inventaire (idCharacter, idObject) VALUES (%s, %s)",
+                    (self.ref, dataObjet["id"]),
+                )
+                mydb.commit()
+            # Mise à jour de l'inventaire
+            self.inventaire = select(
+                "objet o",
+                "all",
+                "o.nameObject, COUNT(o.nameObject) AS Quantité",
+                "JOIN inventaire i ON o.id=i.idObject JOIN personnage p ON p.id=i.idCharacter WHERE p.id=%s GROUP BY o.nameObject"
+                % (self.ref),
+            )
+            l_objet_new = []
+            for objet in l_objet:
+                l_objet_new.append(
+                    f"{objet['nom']} (x{objet['quantité']})"
+                    if objet["quantité"] > 1
+                    else f"{objet['nom']}"
+                )
+        # Affichage d'un message
+        return (
+            f"\nVous mettez dans votre inventaire:\n\t"
+            + "\n\t".join(l_objet_new)
+            + "\n"
+        )
 
     @staticmethod
     def creation(id_joueur):
@@ -128,10 +131,13 @@ class Personnage:
             )
         )
 
+        # Tant que le joueur entre rien ou que la longueur de son pseudo est inférieure à 3 ou le pseudo vaut 'user' ou que son pseudo est déjà présent dans la BDD
         while (
             not nom
             or len(nom) < 3
             or nom.lower() == "user"
+            or " " in nom
+            or "-" in nom
             or select(
                 "personnage",
                 "one",
@@ -150,7 +156,7 @@ class Personnage:
 
         mydb.cursor().execute(
             "INSERT INTO personnage (idPlayer, idSpecies, idCategory, nameCharacter) VALUES (%s, %s, %s, %s)",
-            (id_joueur, espece, classe, nom,),
+            (id_joueur, espece, classe, first_uppercase_letter(nom),),
         )
         mydb.commit()
 
