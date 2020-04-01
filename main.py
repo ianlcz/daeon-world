@@ -1,4 +1,3 @@
-from tools.mysql import *
 from helpers import *
 
 # On importe les classes

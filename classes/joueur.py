@@ -1,4 +1,3 @@
-from tools.mysql import *
 from helpers import *
 
 # Importation de la classe Personnage
@@ -36,16 +35,10 @@ class Joueur:
             mail_address = str(input("> "))
 
         if (
-            select(
-                "joueur",
-                "one",
-                "*",
-                "WHERE UPPER(lastname)='%s' AND UPPER(firstname)='%s' AND mail_address='%s'"
-                % (nom.upper(), prenom.upper(), mail_address),
-            )
+            select("joueur", "one", "*", "WHERE mail_address='%s'" % (mail_address),)
             is not None
         ):
-            print("\n!! Vous avez déjà un compte joueur")
+            print("\n!! Cette adresse mail est déjà utilisée")
             exit(403)
 
         password = hashlib.sha256(
@@ -95,7 +88,7 @@ class Joueur:
             "joueur",
             "one",
             "*",
-            "WHERE UPPER(login)='%s' OR password='%s'" % (login.upper(), mot_de_passe),
+            "WHERE UPPER(login)='%s' AND password='%s'" % (login.upper(), mot_de_passe),
         )
 
         if (

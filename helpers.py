@@ -1,3 +1,5 @@
+from tools.mysql import *
+
 from datetime import datetime
 from getpass import getpass
 from pick import pick
@@ -18,7 +20,15 @@ def say_question(title, options, table_name):
 def create_login(firstname, lastname):
     if " " in lastname:
         lastname = lastname.split(" ")[0][0] + lastname.split(" ")[1]
-    return (firstname[0] + lastname).lower()
+
+    login = (firstname[0] + lastname).lower()
+    count = 0
+
+    while select("joueur", "one", "*", "WHERE login='%s'" % (login)) is not None:
+        count += 1
+        login = (firstname[0] + lastname).lower() + f"_{count}"
+
+    return login
 
 
 def first_uppercase_letter(string):

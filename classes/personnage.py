@@ -1,4 +1,3 @@
-from tools.mysql import *
 from helpers import *
 
 
@@ -115,9 +114,7 @@ class Personnage:
                 )
         # Affichage d'un message
         return (
-            f"\nVous mettez dans votre inventaire:\n\t"
-            + "\n\t".join(l_objet_new)
-            + "\n"
+            "\nVous mettez dans votre inventaire:\n\t" + "\n\t".join(l_objet_new) + "\n"
         )
 
     @staticmethod
