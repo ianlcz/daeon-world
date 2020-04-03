@@ -5,6 +5,8 @@ from classes.joueur import Joueur
 from classes.personnage import Personnage
 from classes.espece import Espece
 from classes.categorie import Categorie
+from classes.armure import Armure
+from classes.arme import Arme
 
 # Le joueur se connecte à son compte
 dataJoueur = Joueur.connexion()
@@ -15,6 +17,14 @@ dataPersonnage = select(
     "one",
     "*",
     "JOIN joueur j ON p.idPlayer=j.id WHERE p.idPlayer=%s" % (dataJoueur["id"]),
+)
+
+# On récupère l'armure d'un personnage
+dataArmure = select(
+    "armure a",
+    "one",
+    "*",
+    "JOIN personnage p ON p.id=a.idCharacter WHERE p.id=%s" % (dataPersonnage["id"]),
 )
 
 # On récupère l'inventaire d'un personnage
@@ -35,7 +45,7 @@ player = Personnage(
         select(
             "espece e", "one", "e.nameSpecies", "JOIN personnage p ON e.id=p.idSpecies"
         )["nameSpecies"]
-    ).nom,
+    ),
     Categorie(
         select(
             "classe c",
@@ -43,7 +53,8 @@ player = Personnage(
             "c.nameCategory",
             "JOIN personnage p ON c.id=p.idCategory",
         )["nameCategory"]
-    ).nom,
+    ),
+    Armure(),
     dataInventaire,
     dataPersonnage["level"],
     dataPersonnage["exp_points"],
@@ -56,16 +67,18 @@ player = Personnage(
 # On affiche les informations de l'objet 'player'
 print(player)
 
-# On ajoute un objet dans l'inventaire
-print(
-    player.ajouter_objet(
-        [
-            {"nom": "Morceau de pain", "quantité": 2},
-            {"nom": "Pomme", "quantité": 1},
-            {"nom": "Bout de bois", "quantité": 1},
-        ]
-    )
-)
+# Vérification que le personnage ne possède pas déjà d'arme
+if (
+    select(
+        "armure a",
+        "one",
+        "*",
+        "JOIN personnage p ON p.id=a.idCharacter WHERE p.id=%s" % (player.ref),
+    )["idArme"]
+    is None
+    and not player.inventaire
+):
+    player.armure.setArme(player.ref, player.classe.nom)
 
-# On affiche de nouveau les informations de l'objet 'player'
+# On affiche les informations de l'objet 'player'
 print(player)

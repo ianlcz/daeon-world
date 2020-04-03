@@ -1,5 +1,7 @@
 from helpers import *
 
+from classes.arme import Arme
+
 
 class Personnage:
     """
@@ -13,6 +15,7 @@ class Personnage:
         sexe,
         race,
         classe,
+        armure={},
         inventaire=[],
         niveau=1,
         point_xp=0,
@@ -26,6 +29,7 @@ class Personnage:
         self.sexe = sexe
         self.race = race
         self.classe = classe
+        self.armure = armure
         self.inventaire = inventaire
         self.niveau = niveau
         self.point_xp = point_xp
@@ -48,12 +52,36 @@ class Personnage:
 
         argent = "Pas de pièces" if self.argent is None else f"Pièces: {self.argent}"
 
+        # Récupération des données de l'Armure du personnage
+        dataArmure = select(
+            "armure a",
+            "one",
+            "*",
+            "JOIN personnage p ON p.id=a.idCharacter WHERE p.id=%s" % (self.ref),
+        )
+
+        # Vérification que le personnage possède une arme dans son armurie
+        if dataArmure["idArme"] is not None:
+            # Récupération des informations de l'arme
+            dataArme = select(
+                "objet", "one", "*", "WHERE id=%s" % (dataArmure["idArme"])
+            )
+            # Initialisation du
+            self.armure.arme = Arme(
+                dataArme["nameObject"],
+                dataArme["level_required"],
+                dataArme["damage_points"],
+            )
+            arme = f"{self.armure.arme.nom} | niv.{self.armure.arme.niveau} | dégât:{self.armure.arme.degat}"
+        else:
+            arme = "Aucune"
+
         # Si l'inventaire ne contient rien et que le personnage n'a pas d'argent
         if not self.inventaire and self.argent is None:
             inventaire = "Votre inventaire est vide !"
         # Sinon si l'inventaire ne contient rien et que le personnage possède de l'argent
         elif not self.inventaire and self.argent is not None:
-            inventaire = "Inventaire:\t" + argent
+            inventaire = "Inventaire\t" + argent
         else:
             inventaire = []
             for objet in self.inventaire:
@@ -63,9 +91,9 @@ class Personnage:
                     else objet["nameObject"]
                 )
             inventaire.append("\n\t\t" + argent)
-            inventaire = "Inventaire:\t" + "\n\t\t".join(inventaire)
+            inventaire = "Inventaire\t" + "\n\t\t".join(inventaire)
 
-        return f"\nniv.{self.niveau} | XP:{self.point_xp} | PV:{round(point_vie, 1)}\n\nNom:\t\t{self.nom}\nRace:\t\t{self.race}\nSexe:\t\t{sexe}\nClasse:\t\t{self.classe}\n\nAttaque:\t{self.point_attaque}\nDéfense:\t{self.point_defense}\n\n{inventaire}\n"
+        return f"""\nniv.{self.niveau} | XP:{self.point_xp} | PV:{round(point_vie, 1)}\n\nNom\t\t{self.nom}\nRace\t\t{self.race.nom}\nSexe\t\t{sexe}\nClasse\t\t{self.classe.nom}\n\nAttaque\t\t{self.point_attaque}\nDéfense\t\t{self.point_defense}\n\n\tARMURIE\nHeaume\t\t{self.armure.heaume}\nCuirasse\t{self.armure.cuirasse}\nGantelet\t{self.armure.gantelet}\nJambière\t{self.armure.jambiere}\nArme\t\t{arme}\n\n{inventaire}\n"""
 
     def gagner_point_xp(self, nb_xp):
         """
@@ -151,9 +179,16 @@ class Personnage:
             "Choisissez votre classe: ", select("classe", "all"), "Category"
         )
 
+        # Création du personnage dans la base de données
         mydb.cursor().execute(
             "INSERT INTO personnage (idPlayer, idSpecies, idCategory, nameCharacter) VALUES (%s, %s, %s, %s)",
             (id_joueur, espece, classe, first_uppercase_letter(nom),),
+        )
+        mydb.commit()
+
+        # Création de l'armure du personnage dans la base de données
+        mydb.cursor().execute(
+            "INSERT INTO armure (idCharacter) VALUES (%s)" % (id_joueur)
         )
         mydb.commit()
 
