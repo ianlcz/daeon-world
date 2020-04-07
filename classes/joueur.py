@@ -1,4 +1,4 @@
-from helpers import *
+from tools.helpers import *
 
 # Importation de la classe Personnage
 from classes.personnage import Personnage

@@ -1,4 +1,4 @@
-from helpers import *
+from tools.helpers import *
 
 from classes.arme import Arme
 
@@ -22,7 +22,7 @@ class Personnage:
         point_vie=1.0,
         point_attaque=0,
         point_defense=0,
-        argent=None,
+        argent=0,
     ):
         self.ref = ref
         self.nom = nom
@@ -50,7 +50,7 @@ class Personnage:
             else self.point_vie * 100
         )
 
-        argent = "Pas de pièces" if self.argent is None else f"Pièces: {self.argent}"
+        argent = "Pas de pièces" if self.argent == 0 else f"Pièces: {self.argent}"
 
         # Récupération des données de l'Armure du personnage
         dataArmure = select(
@@ -72,23 +72,29 @@ class Personnage:
                 dataArme["level_required"],
                 dataArme["damage_points"],
             )
-            arme = f"{self.armure.arme.nom} | niv.{self.armure.arme.niveau} | dégât:{self.armure.arme.degat}"
+            arme = f"{self.armure.arme.nom} (niv.{self.armure.arme.niveau} | dmg.{self.armure.arme.degat})"
         else:
             arme = "Aucune"
 
         # Si l'inventaire ne contient rien et que le personnage n'a pas d'argent
-        if not self.inventaire and self.argent is None:
+        if not self.inventaire and self.argent == 0:
             inventaire = "Votre inventaire est vide !"
         # Sinon si l'inventaire ne contient rien et que le personnage possède de l'argent
-        elif not self.inventaire and self.argent is not None:
+        elif not self.inventaire and self.argent == 0:
             inventaire = "Inventaire\t" + argent
         else:
             inventaire = []
             for objet in self.inventaire:
+                describeObjet = (
+                    f"{objet['nameObject']}"
+                    if objet["idCategory"] is None
+                    else f"{objet['nameObject']} (niv.{objet['level_required']} | dmg.{objet['damage_points']})"
+                )
+
                 inventaire.append(
-                    f"{objet['nameObject']} (x{objet['Quantité']})"
+                    f"{describeObjet} (x{objet['Quantité']})"
                     if objet["Quantité"] > 1
-                    else objet["nameObject"]
+                    else describeObjet
                 )
             inventaire.append("\n\t\t" + argent)
             inventaire = "Inventaire\t" + "\n\t\t".join(inventaire)
@@ -119,7 +125,7 @@ class Personnage:
                 print(f"!! Nous n'avons pas pu trouvé l'objet: {objet['nom']}")
                 exit(404)
             # Ajout de l'objet dans l'inventaire
-            for item in range(objet["quantité"]):
+            for item in range(objet["quantite"]):
                 mydb.cursor().execute(
                     "INSERT INTO inventaire (idCharacter, idObject) VALUES (%s, %s)",
                     (self.ref, dataObjet["id"]),
@@ -129,15 +135,15 @@ class Personnage:
             self.inventaire = select(
                 "objet o",
                 "all",
-                "o.nameObject, COUNT(o.nameObject) AS Quantité",
-                "JOIN inventaire i ON o.id=i.idObject JOIN personnage p ON p.id=i.idCharacter WHERE p.id=%s GROUP BY o.nameObject"
+                "o.nameObject, o.idCategory, o.level_required, o.damage_points, COUNT(o.nameObject) AS Quantité",
+                "JOIN inventaire i ON o.id=i.idObject JOIN personnage p ON p.id=i.idCharacter WHERE p.id=%s GROUP BY o.nameObject, o.idCategory, o.level_required, o.damage_points"
                 % (self.ref),
             )
             l_objet_new = []
             for objet in l_objet:
                 l_objet_new.append(
-                    f"{objet['nom']} (x{objet['quantité']})"
-                    if objet["quantité"] > 1
+                    f"{objet['nom']} (x{objet['quantite']})"
+                    if objet["quantite"] > 1
                     else f"{objet['nom']}"
                 )
         # Affichage d'un message

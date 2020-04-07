@@ -1,5 +1,4 @@
 import mysql.connector
-import json
 
 mydb = mysql.connector.connect(
     host="localhost", user="root", passwd="root", database="daeon-world"

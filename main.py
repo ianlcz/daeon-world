@@ -1,4 +1,4 @@
-from helpers import *
+from tools.helpers import *
 
 # On importe les classes
 from classes.joueur import Joueur
@@ -31,8 +31,8 @@ dataArmure = select(
 dataInventaire = select(
     "objet o",
     "all",
-    "o.nameObject, COUNT(o.nameObject) AS Quantité",
-    "JOIN inventaire i ON o.id=i.idObject JOIN personnage p ON p.id=i.idCharacter WHERE p.id=%s GROUP BY o.nameObject"
+    "o.nameObject, o.idCategory, o.level_required, o.damage_points, COUNT(o.nameObject) AS Quantité",
+    "JOIN inventaire i ON o.id=i.idObject JOIN personnage p ON p.id=i.idCharacter WHERE p.id=%s GROUP BY o.nameObject, o.idCategory, o.level_required, o.damage_points"
     % (dataPersonnage["id"]),
 )
 
@@ -67,18 +67,14 @@ player = Personnage(
 # On affiche les informations de l'objet 'player'
 print(player)
 
-# Vérification que le personnage ne possède pas déjà d'arme
-if (
-    select(
-        "armure a",
-        "one",
-        "*",
-        "JOIN personnage p ON p.id=a.idCharacter WHERE p.id=%s" % (player.ref),
-    )["idArme"]
-    is None
-    and not player.inventaire
-):
-    player.armure.setArme(player.ref, player.classe.nom)
+# Le personnage obtient sa première arme
+player.armure.setArme(player)
 
-# On affiche les informations de l'objet 'player'
+# On affiche les nouvelles informations de l'objet 'player'
+print(player)
+
+# Le personnage obtient sa première arme
+player.armure.setArme(player, Arme("Épée de bronze"))
+
+# On affiche les nouvelles informations de l'objet 'player'
 print(player)
