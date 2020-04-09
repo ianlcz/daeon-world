@@ -1,6 +1,6 @@
-import mysql.connector
+import mysql.connector as mysql
 
-mydb = mysql.connector.connect(
+mydb = mysql.connect(
     host="localhost", user="root", passwd="root", database="daeon-world"
 )
 

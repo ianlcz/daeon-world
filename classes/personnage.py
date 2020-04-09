@@ -1,5 +1,6 @@
 from tools.helpers import *
 
+# Importation de la classe Arme
 from classes.arme import Arme
 
 
@@ -150,6 +151,30 @@ class Personnage:
         return (
             "\nVous mettez dans votre inventaire:\n\t" + "\n\t".join(l_objet_new) + "\n"
         )
+
+    def retirer_objet(self, l_objet):
+        """
+        Enlever un objet de son inventaire
+        """
+        for objet in l_objet:
+            # On recherche l'id de l'objet grâce à son nom
+            idObjet = select(
+                "objet", "one", "id", "WHERE nameObject='%s'" % (objet["nom"])
+            )["id"]
+            # On vérifie que le personnage a l'objet dans son inventaire
+            if not select(
+                "inventaire",
+                "all",
+                "*",
+                "WHERE idCharacter=%s AND idObject=%s" % (self.ref, idObjet),
+            ):
+                return f"Vous n'avez pas {objet['nom']} dans votre inventaire"
+            else:
+                # On supprime dans la table 'inventaire' la/les ligne(s) correspondante(s)
+                delete(
+                    "inventaire", "idCharacter=%s AND idObject=%s" % (self.ref, idObjet)
+                )
+                return f"Vous enlevez {objet['nom']} de votre inventaire"
 
     @staticmethod
     def creation(id_joueur):

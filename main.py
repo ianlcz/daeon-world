@@ -6,7 +6,6 @@ from classes.personnage import Personnage
 from classes.espece import Espece
 from classes.categorie import Categorie
 from classes.armure import Armure
-from classes.arme import Arme
 
 # Le joueur se connecte à son compte
 dataJoueur = Joueur.connexion()
@@ -17,23 +16,6 @@ dataPersonnage = select(
     "one",
     "*",
     "JOIN joueur j ON p.idPlayer=j.id WHERE p.idPlayer=%s" % (dataJoueur["id"]),
-)
-
-# On récupère l'armure d'un personnage
-dataArmure = select(
-    "armure a",
-    "one",
-    "*",
-    "JOIN personnage p ON p.id=a.idCharacter WHERE p.id=%s" % (dataPersonnage["id"]),
-)
-
-# On récupère l'inventaire d'un personnage
-dataInventaire = select(
-    "objet o",
-    "all",
-    "o.nameObject, o.idCategory, o.level_required, o.damage_points, COUNT(o.nameObject) AS Quantité",
-    "JOIN inventaire i ON o.id=i.idObject JOIN personnage p ON p.id=i.idCharacter WHERE p.id=%s GROUP BY o.nameObject, o.idCategory, o.level_required, o.damage_points"
-    % (dataPersonnage["id"]),
 )
 
 # On crée l'objet 'player' en fonction des données que l'on a récupéré
@@ -55,7 +37,13 @@ player = Personnage(
         )["nameCategory"]
     ),
     Armure(),
-    dataInventaire,
+    select(
+        "objet o",
+        "all",
+        "o.nameObject, o.idCategory, o.level_required, o.damage_points, COUNT(o.nameObject) AS Quantité",
+        "JOIN inventaire i ON o.id=i.idObject JOIN personnage p ON p.id=i.idCharacter WHERE p.id=%s GROUP BY o.nameObject, o.idCategory, o.level_required, o.damage_points"
+        % (dataPersonnage["id"]),
+    ),
     dataPersonnage["level"],
     dataPersonnage["exp_points"],
     dataPersonnage["life_points"],
@@ -73,8 +61,4 @@ player.armure.setArme(player)
 # On affiche les nouvelles informations de l'objet 'player'
 print(player)
 
-# Le personnage obtient sa première arme
-player.armure.setArme(player, Arme("Épée de bronze"))
-
-# On affiche les nouvelles informations de l'objet 'player'
-print(player)
+print(player.retirer_objet([{"nom": "Arc légendaire de Freya", "quantite": 1}]))
