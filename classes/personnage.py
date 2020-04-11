@@ -100,7 +100,7 @@ class Personnage:
             inventaire.append("\n\t\t" + argent)
             inventaire = "Inventaire\t" + "\n\t\t".join(inventaire)
 
-        return f"""\nniv.{self.niveau} | XP:{self.point_xp} | PV:{round(point_vie, 1)}\n\nNom\t\t{self.nom}\nRace\t\t{self.race.nom}\nSexe\t\t{sexe}\nClasse\t\t{self.classe.nom}\n\nAttaque\t\t{self.point_attaque}\nDéfense\t\t{self.point_defense}\n\n\tARMURIE\nHeaume\t\t{self.armure.heaume}\nCuirasse\t{self.armure.cuirasse}\nGantelet\t{self.armure.gantelet}\nJambière\t{self.armure.jambiere}\nArme\t\t{arme}\n\n{inventaire}\n"""
+        return f"""\nniv.{self.niveau} | XP:{self.point_xp} | PV:{round(point_vie, 1)}\n\nNom\t\t{self.nom}\nRace\t\t{self.race.nom}\nSexe\t\t{sexe}\nClasse\t\t{self.classe.nom}\n\nAttaque\t\t{self.point_attaque}\nDéfense\t\t{self.point_defense}\n\n\tARMURIE\nHeaume\t\t{self.armure.heaume}\nCuirasse\t{self.armure.cuirasse}\nGantelet\t{self.armure.gantelet}\nJambière\t{self.armure.jambiere}\nBouclier\t{self.armure.bouclier}\nArme\t\t{arme}\n\n{inventaire}\n"""
 
     def gagner_point_xp(self, nb_xp):
         """
@@ -112,7 +112,9 @@ class Personnage:
 
     def ajouter_objet(self, l_objet):
         """
-        Mettre un objet dans son inventaire
+        Mettre un ou plusieurs objets dans son inventaire
+
+        `self.ajouter_objet([{"nom": nom de l'objet, "quantite": quantité à ajouter},...])`
         """
         for objet in l_objet:
             # Récupération des données de l'objet
@@ -140,6 +142,8 @@ class Personnage:
                 "JOIN inventaire i ON o.id=i.idObject JOIN personnage p ON p.id=i.idCharacter WHERE p.id=%s GROUP BY o.nameObject, o.idCategory, o.level_required, o.damage_points"
                 % (self.ref),
             )
+
+            # Affichage d'un message
             l_objet_new = []
             for objet in l_objet:
                 l_objet_new.append(
@@ -147,34 +151,80 @@ class Personnage:
                     if objet["quantite"] > 1
                     else f"{objet['nom']}"
                 )
-        # Affichage d'un message
         return (
             "\nVous mettez dans votre inventaire:\n\t" + "\n\t".join(l_objet_new) + "\n"
         )
 
-    def retirer_objet(self, l_objet):
+    def retirer_objet(self, l_objet=[]):
         """
-        Enlever un objet de son inventaire
+        Enlever un ou plusieurs objets de son inventaire
+
+        `self.retirer_objet([{"nom": nom de l'objet, "quantite": quantité à retirer},...])`
         """
-        for objet in l_objet:
-            # On recherche l'id de l'objet grâce à son nom
-            idObjet = select(
-                "objet", "one", "id", "WHERE nameObject='%s'" % (objet["nom"])
-            )["id"]
-            # On vérifie que le personnage a l'objet dans son inventaire
-            if not select(
-                "inventaire",
-                "all",
-                "*",
-                "WHERE idCharacter=%s AND idObject=%s" % (self.ref, idObjet),
-            ):
-                return f"Vous n'avez pas {objet['nom']} dans votre inventaire"
+        # Vérifier que son inventaire n'est pas vide
+        if self.inventaire:
+            # Vider son inventaire
+            if not l_objet:
+                delete("inventaire", "idCharacter=%s" % (self.ref))
+            # Retirer un ou plusieurs objets de son inventaire
             else:
-                # On supprime dans la table 'inventaire' la/les ligne(s) correspondante(s)
-                delete(
-                    "inventaire", "idCharacter=%s AND idObject=%s" % (self.ref, idObjet)
-                )
-                return f"Vous enlevez {objet['nom']} de votre inventaire"
+                for objet in l_objet:
+                    # Récupérer l'id de l'objet
+                    idObjet = select(
+                        "objet",
+                        "one",
+                        "id",
+                        "WHERE LOWER(nameObject)='%s'" % (objet["nom"].lower()),
+                    )["id"]
+                    # Vérifier que le personnage possède l'objet dans son inventaire
+                    if (
+                        select(
+                            "inventaire",
+                            "one",
+                            "*",
+                            "WHERE idCharacter=%s AND idObject=%s"
+                            % (self.ref, idObjet),
+                        )
+                        is not None
+                    ):
+                        quantite = select(
+                            "inventaire",
+                            "one",
+                            "idCharacter, idObject, COUNT(*) AS Quantité",
+                            "WHERE idCharacter=%s AND idObject=%s GROUP BY idCharacter, idObject"
+                            % (self.ref, idObjet),
+                        )["Quantité"]
+                        # Retirer un objet en fonction d'une quantité
+                        if "quantite" in objet and objet["quantite"] < quantite:
+                            delete(
+                                "inventaire",
+                                "idCharacter=%s AND idObject=%s ORDER BY id DESC LIMIT %s"
+                                % (self.ref, idObjet, objet["quantite"]),
+                            )
+                        # Retirer l'objet de son inventaire
+                        else:
+                            delete(
+                                "inventaire",
+                                "idCharacter=%s AND idObject=%s" % (self.ref, idObjet),
+                            )
+
+                        # Mise à jour de l'inventaire
+                        self.inventaire = select(
+                            "objet o",
+                            "all",
+                            "o.nameObject, o.idCategory, o.level_required, o.damage_points, COUNT(o.nameObject) AS Quantité",
+                            "JOIN inventaire i ON o.id=i.idObject JOIN personnage p ON p.id=i.idCharacter WHERE p.id=%s GROUP BY o.nameObject, o.idCategory, o.level_required, o.damage_points"
+                            % (self.ref),
+                        )
+
+                        # Affichage d'un message
+                        return (
+                            f"\n{self.nom}, vous retirez {objet['quantite']} {objet['nom']} de votre inventaire.\n"
+                            if "quantite" in objet and objet["quantite"] < quantite
+                            else f"\n{self.nom}, vous retirez {objet['nom']} de votre inventaire.\n"
+                        )
+                    else:
+                        return f"\n{self.nom}, vous n'avez pas {objet['nom']} dans votre inventaire !\n"
 
     @staticmethod
     def creation(id_joueur):

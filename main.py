@@ -54,11 +54,3 @@ player = Personnage(
 
 # On affiche les informations de l'objet 'player'
 print(player)
-
-# Le personnage obtient sa première arme
-player.armure.setArme(player)
-
-# On affiche les nouvelles informations de l'objet 'player'
-print(player)
-
-print(player.retirer_objet([{"nom": "Arc légendaire de Freya", "quantite": 1}]))
