@@ -88,37 +88,34 @@ class Joueur:
             "joueur",
             "one",
             "*",
-            "WHERE UPPER(login)='%s' AND password='%s'" % (login.upper(), mot_de_passe),
+            "WHERE UPPER(login)='%s' OR password='%s'" % (login.upper(), mot_de_passe),
         )
 
+        # Le compte n'existe pas
         if (
             player is None
             and login.lower() != "user"
             and mot_de_passe != hashlib.sha256("password".encode()).hexdigest()
         ):
-            # Le compte n'existe pas
             print("\n!! Ce compte n'existe pas")
-            time.sleep(4)  # Temporisation de 4s
+            time.sleep(2)  # Temporisation de 2s
             Joueur.connexion()
+
+        # Création d'un compte joueur
         if (
             login.lower() == "user"
             and mot_de_passe == hashlib.sha256("password".encode()).hexdigest()
         ):
-            # Création d'un compte joueur
             Joueur.inscription()
             exit(200)
+
+        # Le login ou mot de passe est erroné
         if (
-            select(
-                "joueur",
-                "one",
-                "id",
-                "WHERE UPPER(login)='%s' AND password='%s'"
-                % (login.upper(), mot_de_passe),
-            )
-        ) is None:
-            # Le login ou mot de passe est erroné
+            login.lower() != player["login"].lower()
+            or mot_de_passe != player["password"]
+        ):
             print("\n!! Votre identifiant ou votre mot de passe est invalide")
-            time.sleep(4)  # Temporisation de 4s
+            time.sleep(2)  # Temporisation de 2s
             Joueur.connexion()
 
         # Vérification que le joueur a un personnage
@@ -138,7 +135,7 @@ class Joueur:
         else:
             # Le joueur a réussi à se connecter et à un personnage
             print(f"\nNous vous connectons à Daeon World...")
-            time.sleep(4)  # Temporisation de 4s
+            time.sleep(2)  # Temporisation de 2s
             os.system("clear")
             print(
                 f"""{player['firstname']} {player['lastname']} [{select('joueur j', 'one', 'r.nameRole', "JOIN role r ON j.idRole=r.id WHERE j.id='%s'" % (player['id']))['nameRole']}]"""

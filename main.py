@@ -10,12 +10,20 @@ from classes.armure import Armure
 # Le joueur se connecte à son compte
 dataJoueur = Joueur.connexion()
 
-# On récupère toutes les données d'un personnage
+# On récupère toutes les données du personnage
 dataPersonnage = select(
     "personnage p",
     "one",
     "*",
     "JOIN joueur j ON p.idPlayer=j.id WHERE p.idPlayer=%s" % (dataJoueur["id"]),
+)
+
+# On récupère toutes les données statistiques du personnage
+dataStatistique = select(
+    "statistiques s",
+    "one",
+    "*",
+    "JOIN personnage p ON s.id=p.idStatistics WHERE p.id=%s" % (dataPersonnage["id"]),
 )
 
 # On crée l'objet 'player' en fonction des données que l'on a récupéré
@@ -47,10 +55,16 @@ player = Personnage(
     dataPersonnage["level"],
     dataPersonnage["exp_points"],
     dataPersonnage["life_points"],
-    dataPersonnage["attack_points"],
-    dataPersonnage["defense_points"],
+    dataStatistique["strength"],
+    dataStatistique["endurance"],
     dataPersonnage["money"],
 )
 
 # On affiche les informations de l'objet 'player'
+print(player)
+
+# Le personnage obtient sa première arme
+player.armure.setArme(player)
+
+# On affiche les nouvelles informations de l'objet 'player'
 print(player)

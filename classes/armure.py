@@ -1,5 +1,8 @@
 from tools.helpers import *
 
+# Importation de la classe Arme
+from classes.arme import Arme
+
 
 class Armure:
     def __init__(

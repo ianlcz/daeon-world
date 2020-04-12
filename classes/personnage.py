@@ -21,8 +21,8 @@ class Personnage:
         niveau=1,
         point_xp=0,
         point_vie=1.0,
-        point_attaque=0,
-        point_defense=0,
+        force=0,
+        endurance=0,
         argent=0,
     ):
         self.ref = ref
@@ -35,8 +35,8 @@ class Personnage:
         self.niveau = niveau
         self.point_xp = point_xp
         self.point_vie = point_vie
-        self.point_attaque = point_attaque
-        self.point_defense = point_defense
+        self.force = force
+        self.endurance = endurance
         self.argent = argent
 
     def __str__(self):
@@ -100,7 +100,7 @@ class Personnage:
             inventaire.append("\n\t\t" + argent)
             inventaire = "Inventaire\t" + "\n\t\t".join(inventaire)
 
-        return f"""\nniv.{self.niveau} | XP:{self.point_xp} | PV:{round(point_vie, 1)}\n\nNom\t\t{self.nom}\nRace\t\t{self.race.nom}\nSexe\t\t{sexe}\nClasse\t\t{self.classe.nom}\n\nAttaque\t\t{self.point_attaque}\nDéfense\t\t{self.point_defense}\n\n\tARMURIE\nHeaume\t\t{self.armure.heaume}\nCuirasse\t{self.armure.cuirasse}\nGantelet\t{self.armure.gantelet}\nJambière\t{self.armure.jambiere}\nBouclier\t{self.armure.bouclier}\nArme\t\t{arme}\n\n{inventaire}\n"""
+        return f"""\nniv.{self.niveau} | XP:{self.point_xp} | PV:{round(point_vie, 1)}\n\nNom\t\t{self.nom}\nRace\t\t{self.race.nom}\nSexe\t\t{sexe}\nClasse\t\t{self.classe.nom}\n\nForce\t\t{self.force}\nEndurance\t{self.endurance}\n\n\tARMURIE\nHeaume\t\t{self.armure.heaume}\nCuirasse\t{self.armure.cuirasse}\nGantelet\t{self.armure.gantelet}\nJambière\t{self.armure.jambiere}\nBouclier\t{self.armure.bouclier}\nArme\t\t{arme}\n\n{inventaire}\n"""
 
     def gagner_point_xp(self, nb_xp):
         """
@@ -257,13 +257,33 @@ class Personnage:
             "Choisissez votre espèce: ", select("espece", "all"), "Species"
         )
         classe = say_question(
-            "Choisissez votre classe: ", select("classe", "all"), "Category"
+            "Choisissez votre classe: ",
+            select(
+                "statistiques s",
+                "all",
+                "c.id, c.nameCategory",
+                "JOIN classe c ON c.id=s.idCategory JOIN espece e ON e.id=s.idSpecies WHERE e.id=%s"
+                % (espece),
+            ),
+            "Category",
         )
 
         # Création du personnage dans la base de données
         mydb.cursor().execute(
-            "INSERT INTO personnage (idPlayer, idSpecies, idCategory, nameCharacter) VALUES (%s, %s, %s, %s)",
-            (id_joueur, espece, classe, first_uppercase_letter(nom),),
+            "INSERT INTO personnage (idPlayer, idSpecies, idCategory, idStatistics, nameCharacter) VALUES (%s, %s, %s, %s, %s)",
+            (
+                id_joueur,
+                espece,
+                classe,
+                select(
+                    "statistiques s",
+                    "one",
+                    "s.id",
+                    "JOIN espece e ON e.id=s.idSpecies JOIN classe c ON c.id=s.idCategory WHERE e.id=%s AND c.id=%s"
+                    % (espece, classe),
+                )["id"],
+                first_uppercase_letter(nom),
+            ),
         )
         mydb.commit()
 
