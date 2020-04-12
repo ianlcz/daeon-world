@@ -17,6 +17,10 @@ def say_question(title, options, table_name):
     return option["id"]
 
 
+def display_message(personne, message):
+    print(f"\n{personne.upper()}\n{message}\n")
+
+
 def create_login(firstname, lastname):
     if " " in lastname:
         lastname = lastname.split(" ")[0][0] + lastname.split(" ")[1]

@@ -33,7 +33,11 @@ player = Personnage(
     dataJoueur["gender"],
     Espece(
         select(
-            "espece e", "one", "e.nameSpecies", "JOIN personnage p ON e.id=p.idSpecies"
+            "espece e",
+            "one",
+            "e.nameSpecies",
+            "JOIN personnage p ON e.id=p.idSpecies WHERE p.id=%s"
+            % (dataPersonnage["id"]),
         )["nameSpecies"]
     ),
     Categorie(
@@ -41,7 +45,8 @@ player = Personnage(
             "classe c",
             "one",
             "c.nameCategory",
-            "JOIN personnage p ON c.id=p.idCategory",
+            "JOIN personnage p ON c.id=p.idCategory WHERE p.id=%s"
+            % (dataPersonnage["id"]),
         )["nameCategory"]
     ),
     Armure(),

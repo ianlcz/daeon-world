@@ -76,8 +76,9 @@ class Armure:
 
             # Un personnage peut posséder l'arme seulement si son niveau est >= à celui de l'arme
             if personnage.niveau >= dataArme_Armure["level_required"]:
-                print(
-                    f"\nArmurier\nBonjour {select('personnage', 'one', '*', 'WHERE id=%s' % (personnage.ref))['nameCharacter']}, je constate que vous n'avez pas d'arme.\nJe pense avoir ce qu'il vous faut.\n\nVous vous équipez: {dataArme_Armure['nameObject']} (niv.{dataArme_Armure['level_required']} | dmg.{dataArme_Armure['damage_points']})\n"
+                display_message(
+                    "Armurier",
+                    f"Bonjour {select('personnage', 'one', '*', 'WHERE id=%s' % (personnage.ref))['nameCharacter']}, je constate que vous n'avez pas d'arme.\nJe pense avoir ce qu'il vous faut.\n\nVous vous équipez: {dataArme_Armure['nameObject']} (niv.{dataArme_Armure['level_required']} | dmg.{dataArme_Armure['damage_points']})",
                 )
             else:
                 print("Vous n'avez pas le niveau requis pour posséder cette arme")
