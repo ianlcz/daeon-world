@@ -28,7 +28,9 @@ class Armure:
         # Si on équipe le personnage d'une arme précise
         if arme is not None:
             # On récupère toutes les informations de l'arme entrée en paramètre
-            dataArme = select("objet", "one", "*", "WHERE nameObject='%s'" % (arme.nom))
+            dataArme_Armure = select(
+                "objet", "one", "*", "WHERE nameObject='%s'" % (arme.nom)
+            )
 
             # Si le personnage est déjà équipé d'une arme
             if (
@@ -54,10 +56,10 @@ class Armure:
                 )
 
             # Un personnage peut posséder l'arme seulement si son niveau est >= à celui de l'arme
-            if personnage.niveau >= dataArme["level_required"]:
-                idArme = dataArme["id"]
+            if personnage.niveau >= dataArme_Armure["level_required"]:
+                idArme = dataArme_Armure["id"]
                 print(
-                    f"\nVous vous équipez: {dataArme['nameObject']} (niv.{dataArme['level_required']} | dmg.{dataArme['damage_points']})\n"
+                    f"\nVous vous équipez: {dataArme_Armure['nameObject']} (niv.{dataArme_Armure['level_required']} | dmg.{dataArme_Armure['damage_points']})\n"
                 )
             else:
                 print("\nVous n'avez pas le niveau requis pour posséder cette arme\n")

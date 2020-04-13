@@ -65,11 +65,27 @@ player = Personnage(
     dataPersonnage["money"],
 )
 
+# On lance la séquence d'introduction quand le personnage ne possède pas d'arme et que son inventaire est vide
+if (
+    not select(
+        "inventaire i",
+        "all",
+        "*",
+        "JOIN personnage p ON p.id=i.idCharacter WHERE p.id=%s"
+        % (dataPersonnage["id"]),
+    )
+    and select(
+        "armure a",
+        "one",
+        "*",
+        "JOIN personnage p ON p.id=a.idCharacter WHERE p.id=%s"
+        % (dataPersonnage["id"]),
+    )["idArme"]
+    is None
+):
+    # Le personnage obtient sa première arme
+    player.armure.setArme(player)
+    print(f"{'-'*28}\nBienvenue dans Daeon World !\n{'-'*28}".upper())
+
 # On affiche les informations de l'objet 'player'
-print(player)
-
-# Le personnage obtient sa première arme
-player.armure.setArme(player)
-
-# On affiche les nouvelles informations de l'objet 'player'
 print(player)
