@@ -15,6 +15,7 @@ Le jeu parvient aussi à récupérer des informations d'une base de données **M
 - [Comment créer un compte joueur ?](#comment-créer-un-compte-joueur)
 - [Comment se connecter à un compte joueur ?](#comment-se-connecter-à-un-compte-joueur)
 - [Comment créer son personnage ?](#comment-créer-son-personnage)
+- [Comment voir les crédits ?](#comment-voir-les-crédits)
 - [**Licence**](#licence)
 
 ## Comment créer un compte joueur ?
@@ -130,6 +131,24 @@ Vous venez de créer votre personnage.
 ```
 
 Comme vous l'indique le message de fin **vous venez de créer votre compte personnage**.
+
+## Comment voir les crédits ?
+
+Pour voir les crédits du jeu, lancez le jeu **`python3 main.py`** et tapez comme identifiant `credits`.
+
+Vous devriez alors obtenir le visuel suivant:
+
+```
+Crédits de Daeon World
+
+VERSION
+1.0.0
+
+DÉVELOPPEUR
+Yann LE COZ <https://github.com/ianlcz>
+
+ANNÉE DE DÉVELOPPEMENT: 2020
+```
 
 ## Licence
 

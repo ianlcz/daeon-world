@@ -242,6 +242,7 @@ class Personnage:
             not nom
             or len(nom) < 3
             or nom.lower() == "user"
+            or nom.lower() == "credits"
             or " " in nom
             or "-" in nom
             or select(

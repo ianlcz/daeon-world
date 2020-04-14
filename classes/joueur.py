@@ -80,6 +80,17 @@ class Joueur:
         # Connexion au compte joueur
         os.system("clear")
         login = str(input("Identifiant: ")).upper()
+
+        # On affiche les crédits
+        if login.lower() == "credits":
+            print(f"\nAffichage des crédits...")
+            time.sleep(2)  # Temporisation de 2s
+            os.system("clear")
+            print(
+                "Crédits de Daeon World\n\nVERSION\n1.0.0\n\nDÉVELOPPEUR\nYann LE COZ <https://github.com/ianlcz>\n\nANNÉE DE DÉVELOPPEMENT: 2020"
+            )
+            exit(200)
+
         mot_de_passe = hashlib.sha256(getpass("Mot de passe: ").encode()).hexdigest()
 
         # Vérification que le compte existe
@@ -96,6 +107,7 @@ class Joueur:
             player is None
             and login.lower() != "user"
             and mot_de_passe != hashlib.sha256("password".encode()).hexdigest()
+            and login.lower() != "credits"
         ):
             print("\n!! Ce compte n'existe pas")
             time.sleep(2)  # Temporisation de 2s
