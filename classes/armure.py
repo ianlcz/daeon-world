@@ -66,13 +66,22 @@ class Armure:
                 exit(405)
         else:
             # On récupère les informations de la première arme qui correspond à la classe du personnage
-            dataArme_Armure = select(
-                "objet",
-                "one",
-                "*",
-                "WHERE id=(SELECT MIN(o.id) FROM objet o JOIN classe c ON c.id=o.idCategory WHERE c.nameCategory='%s')"
-                % (personnage.classe.nom),
-            )
+            if personnage.race.nom == "Orc" and personnage.classe.nom == "Guerrier":
+                dataArme_Armure = select(
+                    "objet",
+                    "one",
+                    "*",
+                    "WHERE id=(SELECT MIN(o.id) FROM objet o JOIN classe c ON c.id=o.idCategory WHERE c.nameCategory='%s' AND o.nameObject LIKE '%s')"
+                    % (personnage.classe.nom, "Hache%"),
+                )
+            else:
+                dataArme_Armure = select(
+                    "objet",
+                    "one",
+                    "*",
+                    "WHERE id=(SELECT MIN(o.id) FROM objet o JOIN classe c ON c.id=o.idCategory WHERE c.nameCategory='%s')"
+                    % (personnage.classe.nom),
+                )
 
             idArme = dataArme_Armure["id"]
 

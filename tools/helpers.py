@@ -18,7 +18,7 @@ def say_question(title, options, table_name):
 
 
 def display_message(personne, message):
-    print(f"\n{personne.upper()}\n{message}\n")
+    print(f"\n<{personne.upper()}>\n{message}\n")
 
 
 def create_login(firstname, lastname):
