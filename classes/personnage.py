@@ -107,7 +107,7 @@ class Personnage:
         Gagner nb_xp points d'XP à un personnage
         """
         self.point_xp += nb_xp
-        update("personnage", "point_xp='%s'" % (self.point_xp), "id='%s'" % (self.ref))
+        update("personnage", "exp_points=%s" % (self.point_xp), "id=%s" % (self.ref))
         return f"\nVous venez de gagner {nb_xp} XP !\n"
 
     def ajouter_objet(self, l_objet):
@@ -122,10 +122,11 @@ class Personnage:
                 "objet",
                 "one",
                 "*",
-                "WHERE LOWER(nameObject)='%s'" % (objet["nom"].lower()),
+                "WHERE LOWER(nameObject)='%s'"
+                % (mydb.converter.escape(objet["nom"].lower())),
             )
             if not dataObjet:
-                print(f"!! Nous n'avons pas pu trouvé l'objet: {objet['nom']}")
+                return f"!! Nous n'avons pas pu trouvé l'objet: {objet['nom']}"
                 exit(404)
             # Ajout de l'objet dans l'inventaire
             for item in range(objet["quantite"]):
@@ -174,7 +175,8 @@ class Personnage:
                         "objet",
                         "one",
                         "id",
-                        "WHERE LOWER(nameObject)='%s'" % (objet["nom"].lower()),
+                        "WHERE LOWER(nameObject)='%s'"
+                        % (mydb.converter.escape(objet["nom"].lower())),
                     )["id"]
                     # Vérifier que le personnage possède l'objet dans son inventaire
                     if (
