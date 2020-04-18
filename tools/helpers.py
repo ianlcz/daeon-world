@@ -47,3 +47,23 @@ def first_uppercase_letter(string):
         return "-".join(new_string)
     else:
         return string.lower()[0].upper() + string.lower()[1:]
+
+
+def format_float(floatNumber):
+    """
+    Permet d'arrondir correctement un nombre à virgule
+
+    `format_float(10.0)`
+    """
+    if round(floatNumber - int(floatNumber), 2) < 0.05:
+        return int(floatNumber)
+    else:
+        if int(list(str(int(floatNumber * 100)))[-1]) >= 5:
+            new_list = []
+            new_list.append(
+                "".join(list(str(int(floatNumber * 100)))[:-2])
+                + str(int(list(str(int(floatNumber * 100)))[-2]) + 1)
+            )
+            return float("".join(new_list)) / 10
+        else:
+            return round(floatNumber, 1)

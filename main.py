@@ -53,8 +53,8 @@ player = Personnage(
     select(
         "objet o",
         "all",
-        "o.nameObject, o.idCategory, o.level_required, o.damage_points, COUNT(o.nameObject) AS Quantité",
-        "JOIN inventaire i ON o.id=i.idObject JOIN personnage p ON p.id=i.idCharacter WHERE p.id=%s GROUP BY o.nameObject, o.idCategory, o.level_required, o.damage_points"
+        "o.nameObject, o.idCategory, o.level_required, o.power_points, COUNT(o.nameObject) AS Quantité",
+        "JOIN inventaire i ON o.id=i.idObject JOIN personnage p ON p.id=i.idCharacter WHERE p.id=%s GROUP BY o.nameObject, o.idCategory, o.level_required, o.power_points"
         % (dataPersonnage["id"]),
     ),
     dataPersonnage["level"],

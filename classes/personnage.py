@@ -45,11 +45,10 @@ class Personnage:
         """
         sexe = "Masculin" if self.sexe == "M" else "Féminin"
 
-        point_vie = (
-            int(self.point_vie * 100)
-            if self.point_vie * 100 - int(self.point_vie * 100) == 0.0
-            else self.point_vie * 100
-        )
+        # On récupère le nouveau nombre de points de vie
+        self.point_vie = select(
+            "personnage", "one", "life_points", "WHERE id=%s" % (self.ref)
+        )["life_points"]
 
         argent = "Pas de pièces" if self.argent == 0 else f"Pièces: {self.argent}"
 
@@ -71,9 +70,9 @@ class Personnage:
             self.armure.arme = Arme(
                 dataArme["nameObject"],
                 dataArme["level_required"],
-                dataArme["damage_points"],
+                dataArme["power_points"],
             )
-            arme = f"{self.armure.arme.nom} (niv.{self.armure.arme.niveau} | dmg.{self.armure.arme.degat})"
+            arme = f"{self.armure.arme.nom} (niv.{self.armure.arme.niveau} | dmg.{format_float(self.armure.arme.degat)})"
         else:
             arme = "Aucune"
 
@@ -89,7 +88,7 @@ class Personnage:
                 describeObjet = (
                     f"{objet['nameObject']}"
                     if objet["idCategory"] is None
-                    else f"{objet['nameObject']} (niv.{objet['level_required']} | dmg.{objet['damage_points']})"
+                    else f"{objet['nameObject']} (niv.{objet['level_required']} | dmg.{format_float(objet['power_points'])})"
                 )
 
                 inventaire.append(
@@ -100,15 +99,15 @@ class Personnage:
             inventaire.append("\n\t\t" + argent)
             inventaire = "Inventaire\t" + "\n\t\t".join(inventaire)
 
-        return f"""\nniv.{self.niveau} | XP:{self.point_xp} | PV:{round(point_vie, 1)}\n\nNom\t\t{self.nom}\nRace\t\t{self.race.nom}\nSexe\t\t{sexe}\nClasse\t\t{self.classe.nom}\n\nForce\t\t{self.force}\nEndurance\t{self.endurance}\n\n\tARMURIE\nHeaume\t\t{self.armure.heaume}\nCuirasse\t{self.armure.cuirasse}\nGantelet\t{self.armure.gantelet}\nJambière\t{self.armure.jambiere}\nBouclier\t{self.armure.bouclier}\nArme\t\t{arme}\n\n{inventaire}\n"""
+        return f"""\nniv.{self.niveau} | EXP:{self.point_xp} | PV:{format_float(self.point_vie*100)}\n\nNom\t\t{self.nom}\nRace\t\t{self.race.nom}\nSexe\t\t{sexe}\nClasse\t\t{self.classe.nom}\n\nForce\t\t{format_float(self.force)}\nEndurance\t{format_float(self.endurance)}\n\n\tARMURIE\nHeaume\t\t{self.armure.heaume}\nCuirasse\t{self.armure.cuirasse}\nGantelet\t{self.armure.gantelet}\nJambière\t{self.armure.jambiere}\nBouclier\t{self.armure.bouclier}\nArme\t\t{arme}\n\n{inventaire}\n"""
 
     def gagner_point_xp(self, nb_xp):
         """
-        Gagner nb_xp points d'XP à un personnage
+        Gagner nb_xp points d'EXP à un personnage
         """
         self.point_xp += nb_xp
         update("personnage", "exp_points=%s" % (self.point_xp), "id=%s" % (self.ref))
-        return f"\nVous venez de gagner {nb_xp} XP !\n"
+        return f"\nVous venez de gagner {nb_xp} EXP !\n"
 
     def ajouter_objet(self, l_objet):
         """
@@ -139,8 +138,8 @@ class Personnage:
             self.inventaire = select(
                 "objet o",
                 "all",
-                "o.nameObject, o.idCategory, o.level_required, o.damage_points, COUNT(o.nameObject) AS Quantité",
-                "JOIN inventaire i ON o.id=i.idObject JOIN personnage p ON p.id=i.idCharacter WHERE p.id=%s GROUP BY o.nameObject, o.idCategory, o.level_required, o.damage_points"
+                "o.nameObject, o.idCategory, o.level_required, o.power_points, COUNT(o.nameObject) AS Quantité",
+                "JOIN inventaire i ON o.id=i.idObject JOIN personnage p ON p.id=i.idCharacter WHERE p.id=%s GROUP BY o.nameObject, o.idCategory, o.level_required, o.power_points"
                 % (self.ref),
             )
 
@@ -214,8 +213,8 @@ class Personnage:
                         self.inventaire = select(
                             "objet o",
                             "all",
-                            "o.nameObject, o.idCategory, o.level_required, o.damage_points, COUNT(o.nameObject) AS Quantité",
-                            "JOIN inventaire i ON o.id=i.idObject JOIN personnage p ON p.id=i.idCharacter WHERE p.id=%s GROUP BY o.nameObject, o.idCategory, o.level_required, o.damage_points"
+                            "o.nameObject, o.idCategory, o.level_required, o.power_points, COUNT(o.nameObject) AS Quantité",
+                            "JOIN inventaire i ON o.id=i.idObject JOIN personnage p ON p.id=i.idCharacter WHERE p.id=%s GROUP BY o.nameObject, o.idCategory, o.level_required, o.power_points"
                             % (self.ref),
                         )
 
@@ -285,7 +284,7 @@ class Personnage:
                     "JOIN espece e ON e.id=s.idSpecies JOIN classe c ON c.id=s.idCategory WHERE e.id=%s AND c.id=%s"
                     % (espece, classe),
                 )["id"],
-                first_uppercase_letter(nom),
+                nom,
             ),
         )
         mydb.commit()

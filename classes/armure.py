@@ -59,7 +59,7 @@ class Armure:
             if personnage.niveau >= dataArme_Armure["level_required"]:
                 idArme = dataArme_Armure["id"]
                 print(
-                    f"\nVous vous équipez: {dataArme_Armure['nameObject']} (niv.{dataArme_Armure['level_required']} | dmg.{dataArme_Armure['damage_points']})\n"
+                    f"\nVous vous équipez: {dataArme_Armure['nameObject']} (niv.{dataArme_Armure['level_required']} | dmg.{format_float(dataArme_Armure['power_points'])})\n"
                 )
             else:
                 print("\nVous n'avez pas le niveau requis pour posséder cette arme\n")
@@ -89,7 +89,7 @@ class Armure:
             if personnage.niveau >= dataArme_Armure["level_required"]:
                 display_message(
                     "Armurier",
-                    f"Bonjour {select('personnage', 'one', '*', 'WHERE id=%s' % (personnage.ref))['nameCharacter']}, je constate que vous n'avez pas d'arme.\nJe pense avoir ce qu'il vous faut.\n\nVous vous équipez: {dataArme_Armure['nameObject']} (niv.{dataArme_Armure['level_required']} | dmg.{dataArme_Armure['damage_points']})",
+                    f"Bonjour {select('personnage', 'one', '*', 'WHERE id=%s' % (personnage.ref))['nameCharacter']}, je constate que vous n'avez pas d'arme.\nJe pense avoir ce qu'il vous faut.\n\nVous vous équipez: {dataArme_Armure['nameObject']} (niv.{dataArme_Armure['level_required']} | dmg.{format_float(dataArme_Armure['power_points'])})",
                 )
             else:
                 print("Vous n'avez pas le niveau requis pour posséder cette arme")
