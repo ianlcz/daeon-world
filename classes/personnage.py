@@ -44,12 +44,6 @@ class Personnage:
         Carte d'identité de l'avatar
         """
         sexe = "Masculin" if self.sexe == "M" else "Féminin"
-
-        # On récupère le nouveau nombre de points de vie
-        self.point_vie = select(
-            "personnage", "one", "life_points", "WHERE id=%s" % (self.ref)
-        )["life_points"]
-
         argent = "Pas de pièces" if self.argent == 0 else f"Pièces: {self.argent}"
 
         # Récupération des données de l'Armure du personnage
@@ -104,6 +98,8 @@ class Personnage:
     def gagner_point_xp(self, nb_xp):
         """
         Gagner nb_xp points d'EXP à un personnage
+
+        `self.gagner_point_xp(nombre de points d'xp gagnés)`
         """
         self.point_xp += nb_xp
         update("personnage", "exp_points=%s" % (self.point_xp), "id=%s" % (self.ref))

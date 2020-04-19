@@ -84,8 +84,12 @@ if (
     is None
 ):
     # Le personnage obtient sa première arme
-    player.armure.setArme(player)
-    print(f"{'-'*28}\nBienvenue dans Daeon World !\n{'-'*28}".upper())
+
+    print(
+        player.armure.setArme(player)
+        + f"\n{'-'*26}\nBienvenue dans Daeon World\n{'-'*26}\n".upper()
+        + player.gagner_point_xp(2),
+    )
 
 # On affiche les informations de l'objet 'player'
 print(player)
