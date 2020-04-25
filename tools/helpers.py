@@ -5,7 +5,6 @@ from getpass import getpass
 from pick import pick
 import hashlib
 import time
-import os
 import re
 
 

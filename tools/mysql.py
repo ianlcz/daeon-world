@@ -1,7 +1,14 @@
 import mysql.connector as mysql
+import dotenv
+import os
+
+dotenv.load_dotenv()
 
 mydb = mysql.connect(
-    host="localhost", user="root", passwd="root", database="daeon-world"
+    host="localhost",
+    user=os.getenv("BDD_USER"),
+    passwd=os.getenv("BDD_PASSWORD"),
+    database="daeon-world",
 )
 
 cursor = mydb.cursor(buffered=True)

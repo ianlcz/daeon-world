@@ -93,7 +93,7 @@ class Personnage:
             inventaire.append("\n\t\t" + argent)
             inventaire = "Inventaire\t" + "\n\t\t".join(inventaire)
 
-        return f"""\nniv.{self.niveau} | EXP:{self.point_xp} | PV:{format_float(self.point_vie*100)}\n\nNom\t\t{self.nom}\nRace\t\t{self.race.nom}\nSexe\t\t{sexe}\nClasse\t\t{self.classe.nom}\n\nForce\t\t{format_float(self.force)}\nEndurance\t{format_float(self.endurance)}\n\n\tARMURIE\nHeaume\t\t{self.armure.heaume}\nCuirasse\t{self.armure.cuirasse}\nGantelet\t{self.armure.gantelet}\nJambière\t{self.armure.jambiere}\nBouclier\t{self.armure.bouclier}\nArme\t\t{arme}\n\n{inventaire}\n"""
+        return f"""\nniv.{self.niveau} | EXP:{self.point_xp} | PV:{format_float(self.point_vie*100)}\n\nNom\t\t{self.nom}\nRace\t\t{self.race.nom}\nSexe\t\t{sexe}\nClasse\t\t{self.classe.nom}\n\nForce\t\t{format_float(self.force)}\nEndurance\t{format_float(self.endurance)}\n\n\tARMURIE\nHeaume\t\t{self.armure.heaume}\nCuirasse\t{self.armure.cuirasse}\nGantelet\t{self.armure.gantelet}\nJambière\t{self.armure.jambiere}\nBottes\t\t{self.armure.bottes}\nBouclier\t{self.armure.bouclier}\nArme\t\t{arme}\n\n{inventaire}\n"""
 
     def gagner_point_xp(self, nb_xp):
         """

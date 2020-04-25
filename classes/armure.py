@@ -13,6 +13,7 @@ class Armure:
         gantelet=None,
         jambiere=None,
         bouclier=None,
+        bottes=None,
     ):
         self.arme = arme
         self.heaume = heaume
@@ -20,6 +21,7 @@ class Armure:
         self.gantelet = gantelet
         self.jambiere = jambiere
         self.bouclier = bouclier
+        self.bottes = bottes
 
     def setArme(self, personnage, nomArme=None):
         """
@@ -31,7 +33,7 @@ class Armure:
         if nomArme is not None:
             # On récupère toutes les informations de l'arme entrée en paramètre
             dataArme_Armure = select(
-                "objet", "one", "*", "WHERE nameObject='%s'" % (nomArme)
+                "objet", "one", "*", "WHERE LOWER(nameObject)='%s'" % (nomArme.lower())
             )
 
             # Si le personnage est déjà équipé d'une arme
