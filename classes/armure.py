@@ -94,3 +94,44 @@ class Armure:
         else:
             return "\nVous n'avez pas le niveau requis pour posséder cette arme !\n"
             exit(405)
+
+
+    def setGantelet(self, personnage, nomGantelet):
+        """
+        Permet au personnage de s'équiper d'un Gantelet
+
+        `self.armure.setGantelet(player, nom du Gantelet)`
+        """
+        # Vérification que le personnage n'est pas déjà équipé d'un Gantelet
+        if (
+            select(
+                "armure a",
+                "one",
+                "*",
+                "JOIN personnage p ON p.id=a.idCharacter WHERE p.id=%s"
+                % (personnage.ref),
+            )
+            is not None
+        ):
+            # On récupère toutes les informations du Gantelet entré en paramètre
+            dataGantelet = select(
+                "objet",
+                "one",
+                "*",
+                "WHERE LOWER(nameObject)='%s'" % (nomGantelet.lower()),
+            )
+
+            if (personnage.niveau >= dataGantelet["level_required"]):
+
+                update(
+                    "armure",
+                    "idGantelet=%s" % (dataGantelet["id"]),
+                    "idCharacter=%s" % (personnage.ref),
+                )
+
+                return f"\nVous vous équipez: {dataGantelet['nameObject']} (niv.{dataGantelet['level_required']} | dmg.{format_float(dataGantelet['power_points'])})\n"
+
+            else:
+                
+                return "\nVous n'avez pas le niveau requis pour posséder cet équipement !\n"
+               

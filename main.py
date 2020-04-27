@@ -93,3 +93,5 @@ if (
 
 # On affiche les informations de l'objet 'player'
 print(player)
+
+print(player.armure.setGantelet(player, 'Gantelets de bronze'))
