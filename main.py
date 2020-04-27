@@ -93,3 +93,6 @@ if (
 
 # On affiche les informations de l'objet 'player'
 print(player)
+
+# Le personnage s'équipe d'un bouclier
+print(player.armure.setBouclier(player, "Bouclier en cuir"))

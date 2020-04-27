@@ -94,3 +94,74 @@ class Armure:
         else:
             return "\nVous n'avez pas le niveau requis pour posséder cette arme !\n"
             exit(405)
+
+    def setBouclier(self, personnage, nomBouclier):
+        """
+        Permet au personnage de s'équiper d'un bouclier
+
+        `self.armure.setBouclier(player, nom du bouclier)`
+        """
+        # On récupère toutes les informations du bouclier entré en paramètre
+        dataBouclier_Armure = select(
+            "objet", "one", "*", "WHERE LOWER(nameObject)='%s'" % (nomBouclier.lower()),
+        )
+        # On récupère les informations du bouclier du personnage
+        dataBouclier_Personnage = select(
+            "objet o",
+            "one",
+            "*",
+            "JOIN armure a ON o.id=a.idBouclier JOIN personnage p ON p.id=a.idCharacter WHERE p.id=%s"
+            % (personnage.ref),
+        )
+        # Vérification que le personnage n'est pas déjà équipé d'un bouclier
+        if (
+            select(
+                "armure a",
+                "one",
+                "*",
+                "JOIN personnage p ON p.id=a.idCharacter WHERE p.id=%s"
+                % (personnage.ref),
+            )["idBouclier"]
+            is None
+        ):
+            # Un personnage peut posséder le bouclier seulement si son niveau est >= à celui du bouclier
+            if personnage.niveau >= dataBouclier_Armure["level_required"]:
+                update(
+                    "armure",
+                    "idBouclier=%s" % (dataBouclier_Armure["id"]),
+                    "idCharacter=%s" % (personnage.ref),
+                )
+                return f"\nVous vous équipez: {dataBouclier_Armure['nameObject']} (niv.{dataBouclier_Armure['level_required']} | dmg.{format_float(dataBouclier_Armure['power_points'])})\n"
+            else:
+                personnage.ajouter_objet(
+                    [{"nom": dataBouclier_Armure["nameObject"], "quantite": 1,}],
+                )
+                return (
+                    "\nVous n'avez pas le niveau requis pour posséder ce bouclier !\n"
+                )
+                exit(405)
+        # Si le personnage possède déjà un bouclier dans son armurie
+        else:
+            # Un personnage peut posséder le bouclier seulement si son niveau est >= à celui du bouclier
+            if (
+                personnage.niveau >= dataBouclier_Armure["level_required"]
+                and dataBouclier_Armure["level_required"]
+                > dataBouclier_Personnage["level_required"]
+            ):
+                # On ajoute dans l'inventaire le bouclier déjà présent dans l'armure
+                personnage.ajouter_objet(
+                    [{"nom": dataBouclier_Personnage["nameObject"], "quantite": 1,}],
+                )
+                update(
+                    "armure",
+                    "idBouclier=%s" % (dataBouclier_Armure["id"]),
+                    "idCharacter=%s" % (personnage.ref),
+                )
+                return f"\nVous vous équipez: {dataBouclier_Armure['nameObject']} (niv.{dataBouclier_Armure['level_required']} | dmg.{format_float(dataBouclier_Armure['power_points'])})\n"
+            else:
+                # On ajoute dans l'inventaire le nouveau bouclier
+                personnage.ajouter_objet(
+                    [{"nom": dataBouclier_Armure["nameObject"], "quantite": 1,}],
+                )
+                return "\nVous n'avez pas le niveau requis pour posséder ce bouclier ou vous possédez déjà un meilleur !\n"
+                exit(405)
