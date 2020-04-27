@@ -110,8 +110,8 @@ class Armure:
                 "*",
                 "JOIN personnage p ON p.id=a.idCharacter WHERE p.id=%s"
                 % (personnage.ref),
-            )
-            is not None
+            )["idGantelet"]
+            is None
         ):
             # On récupère toutes les informations du Gantelet entré en paramètre
             dataGantelet = select(
@@ -120,6 +120,8 @@ class Armure:
                 "*",
                 "WHERE LOWER(nameObject)='%s'" % (nomGantelet.lower()),
             )
+
+            # On vérifie que le personnage possède bien le niveau requis
 
             if (personnage.niveau >= dataGantelet["level_required"]):
 
@@ -132,6 +134,20 @@ class Armure:
                 return f"\nVous vous équipez: {dataGantelet['nameObject']} (niv.{dataGantelet['level_required']} | dmg.{format_float(dataGantelet['power_points'])})\n"
 
             else:
-                
+
                 return "\nVous n'avez pas le niveau requis pour posséder cet équipement !\n"
-               
+
+        else: 
+        # On ajoute dans son inventaire l'arme qu'il possède déjà
+            dataGantelet_Personnage = select(
+                "objet o",
+                "one",
+                "*",
+                "JOIN armure a ON o.id=a.idGantelet JOIN personnage p ON p.id=a.idCharacter WHERE p.id=%s"
+                % (personnage.ref),
+            )
+            personnage.ajouter_objet(
+                [{"nom": dataGantelet_Personnage["nameObject"], "quantite": 1,}],
+            )
+
+            return f"L'objet {dataGantelet_Personnage['nameObject']} a été ajouté à votre inventaire\n"
