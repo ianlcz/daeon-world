@@ -1,7 +1,13 @@
 from tools.helpers import *
 
-# Importation de la classe Arme
+# Importation des classes
 from classes.arme import Arme
+from classes.bouclier import Bouclier
+from classes.heaume import Heaume
+from classes.cuirasse import Cuirasse
+from classes.gantelet import Gantelet
+from classes.jambiere import Jambiere
+from classes.bottes import Bottes
 
 
 class Personnage:
@@ -70,6 +76,102 @@ class Personnage:
         else:
             arme = "Aucune"
 
+        # Vérification que le personnage possède un bouclier dans son armurie
+        if dataArmure["idBouclier"] is not None:
+            # Récupération des informations du bouclier
+            dataBouclier = select(
+                "objet", "one", "*", "WHERE id=%s" % (dataArmure["idBouclier"])
+            )
+            # Création de l'objet 'Bouclier' correspondant au personnage
+            self.armure.bouclier = Bouclier(
+                dataBouclier["nameObject"],
+                dataBouclier["level_required"],
+                dataBouclier["power_points"],
+            )
+            bouclier = f"{self.armure.bouclier.nom} (niv.{self.armure.bouclier.niveau} | dmg.{format_float(self.armure.bouclier.degat)})"
+        else:
+            bouclier = "Aucun"
+
+        # Vérification que le personnage possède un heaume dans son armurie
+        if dataArmure["idHeaume"] is not None:
+            # Récupération des informations du heaume
+            dataHeaume = select(
+                "objet", "one", "*", "WHERE id=%s" % (dataArmure["idHeaume"])
+            )
+            # Création de l'objet 'Heaume' correspondant au personnage
+            self.armure.heaume = Heaume(
+                dataHeaume["nameObject"],
+                dataHeaume["level_required"],
+                dataHeaume["power_points"],
+            )
+            heaume = f"{self.armure.heaume.nom} (niv.{self.armure.heaume.niveau} | dmg.{format_float(self.armure.heaume.degat)})"
+        else:
+            heaume = "Aucun"
+
+        # Vérification que le personnage possède une cuirasse dans son armurie
+        if dataArmure["idCuirasse"] is not None:
+            # Récupération des informations de la cuirasse
+            dataCuirasse = select(
+                "objet", "one", "*", "WHERE id=%s" % (dataArmure["idCuirasse"])
+            )
+            # Création de l'objet 'Cuirasse' correspondant au personnage
+            self.armure.cuirasse = Cuirasse(
+                dataCuirasse["nameObject"],
+                dataCuirasse["level_required"],
+                dataCuirasse["power_points"],
+            )
+            cuirasse = f"{self.armure.cuirasse.nom} (niv.{self.armure.cuirasse.niveau} | dmg.{format_float(self.armure.cuirasse.degat)})"
+        else:
+            cuirasse = "Aucun"
+
+        # Vérification que le personnage possède un gantelet dans son armurie
+        if dataArmure["idGantelet"] is not None:
+            # Récupération des informations du gantelet
+            dataGantelet = select(
+                "objet", "one", "*", "WHERE id=%s" % (dataArmure["idGantelet"])
+            )
+            # Création de l'objet 'Gantelet' correspondant au personnage
+            self.armure.gantelet = Gantelet(
+                dataGantelet["nameObject"],
+                dataGantelet["level_required"],
+                dataGantelet["power_points"],
+            )
+            gantelet = f"{self.armure.gantelet.nom} (niv.{self.armure.gantelet.niveau} | dmg.{format_float(self.armure.gantelet.degat)})"
+        else:
+            gantelet = "Aucun"
+
+        # Vérification que le personnage possède des jambières dans son armurie
+        if dataArmure["idJambiere"] is not None:
+            # Récupération des informations des jambières
+            dataJambiere = select(
+                "objet", "one", "*", "WHERE id=%s" % (dataArmure["idJambiere"])
+            )
+            # Création de l'objet 'Jambier' correspondant au personnage
+            self.armure.jambiere = Jambiere(
+                dataJambiere["nameObject"],
+                dataJambiere["level_required"],
+                dataJambiere["power_points"],
+            )
+            jambiere = f"{self.armure.jambiere.nom} (niv.{self.armure.jambiere.niveau} | dmg.{format_float(self.armure.jambiere.degat)})"
+        else:
+            jambiere = "Aucun"
+
+        # Vérification que le personnage possède des bottes dans son armurie
+        if dataArmure["idBottes"] is not None:
+            # Récupération des informations des bottes
+            dataBottes = select(
+                "objet", "one", "*", "WHERE id=%s" % (dataArmure["idBottes"])
+            )
+            # Création de l'objet 'Bottes' correspondant au personnage
+            self.armure.bottes = Bottes(
+                dataBottes["nameObject"],
+                dataBottes["level_required"],
+                dataBottes["power_points"],
+            )
+            bottes = f"{self.armure.bottes.nom} (niv.{self.armure.bottes.niveau} | dmg.{format_float(self.armure.bottes.degat)})"
+        else:
+            bottes = "Aucun"
+
         # Si l'inventaire ne contient rien et que le personnage n'a pas d'argent
         if not self.inventaire and self.argent == 0:
             inventaire = "Votre inventaire est vide !"
@@ -93,7 +195,7 @@ class Personnage:
             inventaire.append("\n\t\t" + argent)
             inventaire = "Inventaire\t" + "\n\t\t".join(inventaire)
 
-        return f"""\nniv.{self.niveau} | EXP:{self.point_xp} | PV:{format_float(self.point_vie*100)}\n\nNom\t\t{self.nom}\nRace\t\t{self.race.nom}\nSexe\t\t{sexe}\nClasse\t\t{self.classe.nom}\n\nForce\t\t{format_float(self.force)}\nEndurance\t{format_float(self.endurance)}\n\n\tARMURIE\nHeaume\t\t{self.armure.heaume}\nCuirasse\t{self.armure.cuirasse}\nGantelet\t{self.armure.gantelet}\nJambière\t{self.armure.jambiere}\nBottes\t\t{self.armure.bottes}\nBouclier\t{self.armure.bouclier}\nArme\t\t{arme}\n\n{inventaire}\n"""
+        return f"""\nniv.{self.niveau} | EXP:{self.point_xp} | PV:{format_float(self.point_vie*100)}\n\nNom\t\t{self.nom}\nRace\t\t{self.race.nom}\nSexe\t\t{sexe}\nClasse\t\t{self.classe.nom}\n\nForce\t\t{format_float(self.force)}\nEndurance\t{format_float(self.endurance)}\n\n\tARMURIE\nHeaume\t\t{heaume}\nCuirasse\t{cuirasse}\nGantelet\t{gantelet}\nJambière\t{jambiere}\nBottes\t\t{self.armure.bottes}\nBouclier\t{bouclier}\nArme\t\t{arme}\n\n{inventaire}\n"""
 
     def gagner_point_xp(self, nb_xp):
         """

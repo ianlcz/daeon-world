@@ -166,7 +166,6 @@ class Armure:
                 return "\nVous n'avez pas le niveau requis pour posséder ce Bouclier ou vous possédez déjà un meilleur !\n"
                 exit(405)
 
-
     def setHeaume(self, personnage, nomHeaume):
         """
         Permet au personnage de s'équiper d'un Heaume
@@ -208,9 +207,7 @@ class Armure:
                 personnage.ajouter_objet(
                     [{"nom": dataHeaume_Armure["nameObject"], "quantite": 1,}],
                 )
-                return (
-                    "\nVous n'avez pas le niveau requis pour posséder ce Heaume !\n"
-                )
+                return "\nVous n'avez pas le niveau requis pour posséder ce Heaume !\n"
                 exit(405)
         # Si le personnage possède déjà un Heaume dans son armurie
         else:
@@ -237,7 +234,6 @@ class Armure:
                 )
                 return "\nVous n'avez pas le niveau requis pour posséder ce Heaume ou vous possédez déjà un meilleur !\n"
                 exit(405)
-
 
     def setCuirasse(self, personnage, nomCuirasse):
         """
@@ -310,7 +306,6 @@ class Armure:
                 return "\nVous n'avez pas le niveau requis pour posséder ce Cuirasse ou vous possédez déjà un meilleur !\n"
                 exit(405)
 
-
     def setGantelet(self, personnage, nomGantelet):
         """
         Permet au personnage de s'équiper d'un Gantelet
@@ -381,7 +376,6 @@ class Armure:
                 )
                 return "\nVous n'avez pas le niveau requis pour posséder ce Gantelet ou vous possédez déjà un meilleur !\n"
                 exit(405)
-
 
     def setJambiere(self, personnage, nomJambiere):
         """
@@ -454,7 +448,6 @@ class Armure:
                 return "\nVous n'avez pas le niveau requis pour posséder ce Jambiere ou vous possédez déjà un meilleur !\n"
                 exit(405)
 
-
     def setBottes(self, personnage, nomBottes):
         """
         Permet au personnage de s'équiper d'un Bottes
@@ -496,9 +489,7 @@ class Armure:
                 personnage.ajouter_objet(
                     [{"nom": dataBottes_Armure["nameObject"], "quantite": 1,}],
                 )
-                return (
-                    "\nVous n'avez pas le niveau requis pour posséder ce Bottes !\n"
-                )
+                return "\nVous n'avez pas le niveau requis pour posséder ce Bottes !\n"
                 exit(405)
         # Si le personnage possède déjà un Bottes dans son armurie
         else:
@@ -525,5 +516,3 @@ class Armure:
                 )
                 return "\nVous n'avez pas le niveau requis pour posséder ce Bottes ou vous possédez déjà un meilleur !\n"
                 exit(405)
-
-#  botte
