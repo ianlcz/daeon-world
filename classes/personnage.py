@@ -122,7 +122,7 @@ class Personnage:
             )
             cuirasse = f"{self.armure.cuirasse.nom} (niv.{self.armure.cuirasse.niveau} | dmg.{format_float(self.armure.cuirasse.degat)})"
         else:
-            cuirasse = "Aucun"
+            cuirasse = "Aucune"
 
         # Vérification que le personnage possède un gantelet dans son armurie
         if dataArmure["idGantelet"] is not None:
@@ -154,7 +154,7 @@ class Personnage:
             )
             jambiere = f"{self.armure.jambiere.nom} (niv.{self.armure.jambiere.niveau} | dmg.{format_float(self.armure.jambiere.degat)})"
         else:
-            jambiere = "Aucun"
+            jambiere = "Aucunes"
 
         # Vérification que le personnage possède des bottes dans son armurie
         if dataArmure["idBottes"] is not None:
@@ -170,7 +170,7 @@ class Personnage:
             )
             bottes = f"{self.armure.bottes.nom} (niv.{self.armure.bottes.niveau} | dmg.{format_float(self.armure.bottes.degat)})"
         else:
-            bottes = "Aucun"
+            bottes = "Aucunes"
 
         # Si l'inventaire ne contient rien et que le personnage n'a pas d'argent
         if not self.inventaire and self.argent == 0:
@@ -195,7 +195,7 @@ class Personnage:
             inventaire.append("\n\t\t" + argent)
             inventaire = "Inventaire\t" + "\n\t\t".join(inventaire)
 
-        return f"""\nniv.{self.niveau} | EXP:{self.point_xp} | PV:{format_float(self.point_vie*100)}\n\nNom\t\t{self.nom}\nRace\t\t{self.race.nom}\nSexe\t\t{sexe}\nClasse\t\t{self.classe.nom}\n\nForce\t\t{format_float(self.force)}\nEndurance\t{format_float(self.endurance)}\n\n\tARMURIE\nHeaume\t\t{heaume}\nCuirasse\t{cuirasse}\nGantelet\t{gantelet}\nJambière\t{jambiere}\nBottes\t\t{self.armure.bottes}\nBouclier\t{bouclier}\nArme\t\t{arme}\n\n{inventaire}\n"""
+        return f"""\nniv.{self.niveau} | EXP:{self.point_xp} | PV:{format_float(self.point_vie*100)}\n\nNom\t\t{self.nom}\nRace\t\t{self.race.nom}\nSexe\t\t{sexe}\nClasse\t\t{self.classe.nom}\n\nForce\t\t{format_float(self.force)}\nEndurance\t{format_float(self.endurance)}\n\n\tARMURIE\nHeaume\t\t{heaume}\nCuirasse\t{cuirasse}\nGantelet\t{gantelet}\nJambière\t{jambiere}\nBottes\t\t{bottes}\nBouclier\t{bouclier}\nArme\t\t{arme}\n\n{inventaire}\n"""
 
     def gagner_point_xp(self, nb_xp):
         """
