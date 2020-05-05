@@ -30,6 +30,7 @@ class Personnage:
         force=0,
         endurance=0,
         argent=0,
+        banque=None,
     ):
         self.ref = ref
         self.nom = nom
@@ -44,6 +45,7 @@ class Personnage:
         self.force = force
         self.endurance = endurance
         self.argent = argent
+        self.banque = banque
 
     def __str__(self):
         """
@@ -324,6 +326,25 @@ class Personnage:
                         )
                     else:
                         return f"\n{self.nom}, vous n'avez pas {objet['nom']} dans votre inventaire !\n"
+
+    def setBanque(self):
+        if self.banque is None:
+            code_banque = input("> Entrez un code à 4 chiffres: ")
+            while not re.match(r"^[0-9]{4}$", code_banque):
+                code_banque = input("> Entrez un code à 4 chiffres: ")
+
+            # Création du compte bancaire du personnage
+            mydb.cursor().execute(
+                "INSERT INTO banque (code) VALUES (%s)" % (code_banque)
+            )
+            mydb.commit()
+            update(
+                "personnage",
+                "idBanque=%s" % (select("banque", "one", "id")["id"]),
+                "id=%s" % (self.ref),
+            )
+
+            return "Vous n'avez pas de compte"
 
     @staticmethod
     def creation(id_joueur):

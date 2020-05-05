@@ -94,11 +94,4 @@ if (
 # On affiche les informations de l'objet 'player'
 print(player)
 
-# Le personnage s'équipe d'un bouclier
-# print(player.armure.setArme(player, "Dague noire"))
-# print(player.armure.setBouclier(player, "Écu noir"))
-# print(player.armure.setHeaume(player, "Heaume noir"))
-# print(player.armure.setBottes(player, "Bottes noires"))
-# print(player.armure.setJambiere(player, "Jambarts noirs"))
-# print(player.armure.setGantelet(player, "Gantelets noirs"))
-# print(player.armure.setCuirasse(player, "Cuirasse de mithril"))
+print(player.setBanque())
