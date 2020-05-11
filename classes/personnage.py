@@ -176,12 +176,12 @@ class Personnage:
 
         # Si l'inventaire ne contient rien et que le personnage n'a pas d'argent
         if not self.inventaire and self.argent == 0:
-            inventaire = "Votre inventaire est vide !"
+            self.inventaire = "Votre inventaire est vide !"
         # Sinon si l'inventaire ne contient rien et que le personnage possède de l'argent
         elif not self.inventaire and self.argent == 0:
-            inventaire = "Inventaire\t" + argent
+            self.inventaire = "Inventaire\t" + argent
         else:
-            inventaire = []
+            t_inventaire = []
             for objet in self.inventaire:
                 describeObjet = (
                     f"{objet['nameObject']}"
@@ -189,15 +189,15 @@ class Personnage:
                     else f"{objet['nameObject']} (niv.{objet['level_required']} | dmg.{format_float(objet['power_points'])})"
                 )
 
-                inventaire.append(
+                t_inventaire.append(
                     f"{describeObjet} (x{objet['Quantité']})"
                     if objet["Quantité"] > 1
                     else describeObjet
                 )
-            inventaire.append("\n\t\t" + argent)
-            inventaire = "Inventaire\t" + "\n\t\t".join(inventaire)
+            t_inventaire.append("\n\t\t" + argent)
+            self.inventaire = "Inventaire\t" + "\n\t\t".join(t_inventaire)
 
-        return f"""\nniv.{self.niveau} | EXP:{self.point_xp} | PV:{format_float(self.point_vie*100)}\n\nNom\t\t{self.nom}\nRace\t\t{self.race.nom}\nSexe\t\t{sexe}\nClasse\t\t{self.classe.nom}\n\nForce\t\t{format_float(self.force)}\nEndurance\t{format_float(self.endurance)}\n\n\tARMURIE\nHeaume\t\t{heaume}\nCuirasse\t{cuirasse}\nGantelet\t{gantelet}\nJambière\t{jambiere}\nBottes\t\t{bottes}\nBouclier\t{bouclier}\nArme\t\t{arme}\n\n{inventaire}\n"""
+        return f"""\nniv.{self.niveau} | EXP:{self.point_xp} | PV:{format_float(self.point_vie*100)}\n\nNom\t\t{self.nom}\nRace\t\t{self.race.nom}\nSexe\t\t{sexe}\nClasse\t\t{self.classe.nom}\n\nForce\t\t{format_float(self.force)}\nEndurance\t{format_float(self.endurance)}\n\n\tARMURIE\nHeaume\t\t{heaume}\nCuirasse\t{cuirasse}\nGantelet\t{gantelet}\nJambière\t{jambiere}\nBottes\t\t{bottes}\nBouclier\t{bouclier}\nArme\t\t{arme}\n\n{self.inventaire}\n"""
 
     def gagner_point_xp(self, nb_xp):
         """
@@ -326,25 +326,6 @@ class Personnage:
                         )
                     else:
                         return f"\n{self.nom}, vous n'avez pas {objet['nom']} dans votre inventaire !\n"
-
-    def setBanque(self):
-        if self.banque is None:
-            code_banque = input("> Entrez un code à 4 chiffres: ")
-            while not re.match(r"^[0-9]{4}$", code_banque):
-                code_banque = input("> Entrez un code à 4 chiffres: ")
-
-            # Création du compte bancaire du personnage
-            mydb.cursor().execute(
-                "INSERT INTO banque (code) VALUES (%s)" % (code_banque)
-            )
-            mydb.commit()
-            update(
-                "personnage",
-                "idBanque=%s" % (select("banque", "one", "id")["id"]),
-                "id=%s" % (self.ref),
-            )
-
-            return "Vous n'avez pas de compte"
 
     @staticmethod
     def creation(id_joueur):

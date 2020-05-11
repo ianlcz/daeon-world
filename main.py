@@ -6,6 +6,7 @@ from classes.personnage import Personnage
 from classes.espece import Espece
 from classes.categorie import Categorie
 from classes.armure import Armure
+from classes.banque import Banque
 
 # Le joueur se connecte à son compte
 dataJoueur = Joueur.connexion()
@@ -63,6 +64,7 @@ player = Personnage(
     dataStatistique["strength"],
     dataStatistique["endurance"],
     dataPersonnage["money"],
+    Banque(),
 )
 
 # On lance la séquence d'introduction quand le personnage ne possède pas d'arme et que son inventaire est vide
@@ -94,4 +96,4 @@ if (
 # On affiche les informations de l'objet 'player'
 print(player)
 
-print(player.setBanque())
+player.banque.ouvrir_interface(player)
