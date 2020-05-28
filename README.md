@@ -9,6 +9,8 @@ Le jeu est codé en _Python_ avec l'aide du framework _Ren'Py_.
 
 [CONSULTER LA DOCUMENTATION](./README.md) (fichier courant)
 
+[Télécharger le jeu ici](https://we.tl/t-jWiiB9NLBE)
+
 ## Auteur
 
 **Marvyn ABOULICAM** - Developpement Ren'Py
