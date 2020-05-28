@@ -5,10 +5,14 @@ Ce dépôt contient le code source **Python** d'un jeu de type Visual novel (jeu
 Le jeu parvient aussi à récupérer des informations d'une base de données **MySQL**.
 Le jeu est codé en _Python_ avec l'aide du framework _Ren'Py_.
 
+[CONSULTER LE MANUEL D'UTILISATION](./manual.md)
+
 ## Auteur
 
 **Marvyn ABOULICAM** - Developpement Ren'Py
+
 **Quentin REGNAULT** - Scénario, Launcher, Support dev
+
 **Yann LE COZ** - BDD, POO, Algorithmes Complexes - [ianlcz](https://github.com/ianlcz)
 
 ## Sommaire

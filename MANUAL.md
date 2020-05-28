@@ -5,20 +5,20 @@ Le jeu se lance automatiquement une fois connecté.
 
 **Menu du jeu :**
 
-[Menu](./images/menu.jpg)
+![Menu](./images/menu.jpg)
 
 Pour lancer une nouvelle partie, il suffit de cliquer sur "Nouvelle Partie".
 
 **Menu des emplacements des sauvegardes:**
-[Sauvegardes](./images/save.jpg)
+![Sauvegardes](./images/save.jpg)
 
 Il suffit de cliquer sur la sauvegarde pour la charger, sinon de cliquer sur une des cases vides pour sauvegarder sa position actuelle.
 
 **Menu des options :**
-[Options](./images/settings.jpg)
+![Options](./images/settings.jpg)
 
 Les options sont assez triviales, celles relatives aux sons ne sont ici pas à prendre en compte, le jeu n'étant pas encore composé d'audios.
 
-**Menud es credits :**
+**Menud des credits :**
 
-[Credits](./images/credits.jpg)
+![Credits](./images/credits.jpg)
