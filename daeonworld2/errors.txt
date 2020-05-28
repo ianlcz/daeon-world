@@ -1,0 +1,10 @@
+﻿I'm sorry, but errors were detected in your script. Please correct the
+errors listed below, and try again.
+
+
+File "game/script.rpy", line 94: expected 'image_name_component' not found.
+    show scene black
+        ^
+
+Ren'Py Version: Ren'Py 7.3.5.606
+Thu May 28 08:41:10 2020
