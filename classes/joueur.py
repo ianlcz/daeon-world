@@ -1,4 +1,6 @@
 from tools.helpers import *
+import os
+import subprocess
 
 # Importation de la classe Personnage
 from classes.personnage import Personnage
@@ -149,11 +151,13 @@ class Joueur:
             print(f"\nNous vous connectons à Daeon World...")
             time.sleep(2)  # Temporisation de 2s
             os.system("clear")
-            print(
-                f"""{player['firstname']} {player['lastname']} [{select('joueur j', 'one', 'r.nameRole', "JOIN role r ON j.idRole=r.id WHERE j.id='%s'" % (player['id']))['nameRole']}]"""
-                if not player["last_connection"]
-                else f"""{player['firstname']} {player['lastname']} [{select('joueur j', 'one', 'r.nameRole', "JOIN role r ON j.idRole=r.id WHERE j.id='%s'" % (player['id']))['nameRole']}] - {player['last_connection'].strftime('%d/%m/%Y %H:%M')}"""
-            )
+            # os.system('"D:\\Téléchargement\\daeonworld2-1.0-pc\\daenworld2.exe"')
+            subprocess.call(['D:\Téléchargement\daeonworld2-1.0-pc\daeonworld2.exe'])
+            # print(
+            #     f"""{player['firstname']} {player['lastname']} [{select('joueur j', 'one', 'r.nameRole', "JOIN role r ON j.idRole=r.id WHERE j.id='%s'" % (player['id']))['nameRole']}]"""
+            #     if not player["last_connection"]
+            #     else f"""{player['firstname']} {player['lastname']} [{select('joueur j', 'one', 'r.nameRole', "JOIN role r ON j.idRole=r.id WHERE j.id='%s'" % (player['id']))['nameRole']}] - {player['last_connection'].strftime('%d/%m/%Y %H:%M')}"""
+            # )
 
             update(
                 "joueur",
