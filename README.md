@@ -6,6 +6,7 @@ Le jeu parvient aussi à récupérer des informations d'une base de données **M
 Le jeu est codé en _Python_ avec l'aide du framework _Ren'Py_.
 
 [CONSULTER LE MANUEL D'UTILISATION DU JEU](./MANUAL.md)
+
 [CONSULTER LA DOCUMENTATION](./README.md) (fichier courant)
 
 ## Auteur
