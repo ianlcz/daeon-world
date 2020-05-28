@@ -160,4 +160,5 @@ class Joueur:
                 "last_connection='%s'" % (datetime.now().strftime("%Y-%m-%d %H:%M:%S")),
                 "login='%s' AND password='%s'" % (login, mot_de_passe),
             )
+            
             return player

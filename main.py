@@ -96,4 +96,4 @@ if (
 # On affiche les informations de l'objet 'player'
 print(player)
 
-player.banque.ouvrir_interface(player)
+# player.banque.ouvrir_interface(player)
